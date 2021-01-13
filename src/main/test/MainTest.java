@@ -25,13 +25,21 @@ public class MainTest {
                 .password("workday.cn")
                 .path("d:\\code\\").build();
 
+        final DbParam p3 = DbParam.builder().url("jdbc:oracle:thin:@10.16.26.21:1521:svdp")
+                .daoPackage("com.ziroom.code.test.dao")
+                .entityPackage("com.ziroom.code.test.entity")
+                .schema("HLASSET")
+                .user("HLASSET")
+                .password("oracle")
+                .path("d:\\code\\").build();
 
-        final DbParam dp = p2;
+
+        final DbParam dp = p3;
         IConfigure config = new IConfigure() {
 
             @Override
             public List<String> includes() {
-                return Lang.array2list(Lang.array("doc_project"));
+                return Lang.array2list(Lang.array("sys_dictionary"));
             }
 
             @Override

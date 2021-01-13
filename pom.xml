@@ -4,7 +4,7 @@
     <groupId>cn.mapway</groupId>
     <artifactId>db-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>1.0.0</version>
+    <version>1.1.1</version>
     <name>db-maven-plugin Maven Mojo</name>
     <url>http://maven.mapway.cn</url>
     <properties>
@@ -58,6 +58,13 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.45</version>
+
+        </dependency>
+        <dependency>
+            <groupId>org.ojdbc6</groupId>
+            <artifactId>ojdbc6</artifactId>
+            <version>6.0</version>
+
         </dependency>
         <dependency>
             <groupId>com.squareup</groupId>
@@ -68,6 +75,7 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>3.4.0</version>
+
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -78,6 +86,7 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.12</version>
+
         </dependency>
     </dependencies>
     <build>
