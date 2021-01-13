@@ -184,7 +184,7 @@ public class DbDao extends AbstractMojo {
             @Override
             public List<String> includes() {
                 if (Strings.isBlank(includes)) {
-                    return new ArrayList();
+                    return new ArrayList<String>();
                 }
                 String[] items = Strings.split(includes, false, ',', ';');
                 return Lang.array2list(items);
@@ -193,7 +193,7 @@ public class DbDao extends AbstractMojo {
             @Override
             public List<String> excludes() {
                 if (Strings.isBlank(includes)) {
-                    return new ArrayList();
+                    return new ArrayList<String>();
                 }
                 String[] items = Strings.split(includes, false, ',', ';');
                 return Lang.array2list(items);
