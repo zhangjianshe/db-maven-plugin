@@ -56,7 +56,7 @@ public class DB2Code {
     /**
      * constuction function
      *
-     * @param configuration
+     * @param configuration config
      */
     public DB2Code(IConfigure configuration) {
         this.configure = configuration;
@@ -127,21 +127,20 @@ public class DB2Code {
         }
 
         for (final Schema schema : catalog.getSchemas()) {
-            if (schema.getCatalogName().equals(configure.getSchema())) {
-                for (final Table table : catalog.getTables(schema)) {
-                    String tableName = table.getName();
-                    if (inList(excludes, tableName)) {
+
+            for (final Table table : catalog.getTables(schema)) {
+                String tableName = table.getName();
+                if (inList(excludes, tableName)) {
+                    continue;
+                }
+
+                if (includes.size() > 0) {
+                    if (!inList(includes, tableName)) {
                         continue;
                     }
-
-                    if (includes.size() > 0) {
-                        if (!inList(includes, tableName)) {
-                            continue;
-                        }
-                    }
-                    exportTableEntity(table, configure);
-                    exportTableDao(table, configure);
                 }
+                exportTableEntity(table, configure);
+                exportTableDao(table, configure);
             }
         }
 
@@ -149,7 +148,7 @@ public class DB2Code {
 
     private boolean inList(List<String> includes, String table) {
         for (String s : includes) {
-            if (s.equals(table)) {
+            if (s.compareToIgnoreCase(table) == 0) {
                 return true;
             }
         }

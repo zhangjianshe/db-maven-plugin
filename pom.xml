@@ -4,17 +4,18 @@
     <groupId>cn.mapway</groupId>
     <artifactId>db-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>1.1.0</version>
-    <name>db-maven-plugin Maven Mojo</name>
+    <version>1.1.1</version>
+    <name>db-maven-plugin</name>
     <url>http://maven.mapway.cn</url>
+    <description>mapway's maven plugin for db tools</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
         <java.version>1.8</java.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <!--        <gpg.keyname>1F8B2CB0A3E469D2</gpg.keyname>-->
-        <gpg.keyname>8F43F628BFCC2B9A</gpg.keyname>
+        <gpg.keyname>1F8B2CB0A3E469D2</gpg.keyname>
+        <!--        <gpg.keyname>8F43F628BFCC2B9A</gpg.keyname>-->
     </properties>
     <licenses>
         <license>
@@ -58,6 +59,13 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.45</version>
+
+        </dependency>
+        <dependency>
+            <groupId>org.ojdbc6</groupId>
+            <artifactId>ojdbc6</artifactId>
+            <version>6.0</version>
+
         </dependency>
         <dependency>
             <groupId>com.squareup</groupId>
@@ -68,6 +76,7 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>3.4.0</version>
+
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -78,6 +87,7 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.12</version>
+
         </dependency>
     </dependencies>
     <build>
@@ -95,6 +105,45 @@
         </plugins>
     </build>
     <profiles>
+        <profile>
+            <id>ziroom</id>
+            <distributionManagement>
+                <repository>
+                    <id>ziroom-maven-central</id>
+                    <url>http://maven.ziroom.com:8081/nexus/content/repositories/sms-t</url>
+                </repository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>package-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>package-javadoc</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>release</id>
             <distributionManagement>

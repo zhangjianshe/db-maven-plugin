@@ -19,7 +19,7 @@ public class CamelConvert implements INameConvertor {
      */
     public String convertToCamelCase(String text) {
 
-
+        text = text.toLowerCase();
         String[] segs;
         if (text.contains("_")) {
             segs = text.split("_");

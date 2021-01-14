@@ -11,11 +11,13 @@ public interface IConfigure {
 
     /**
      * 需要生成的列表
+     * @return list
      */
     List<String> includes();
 
     /**
      * 需要生成的列表
+     * @return list
      */
     List<String> excludes();
 
@@ -72,7 +74,7 @@ public interface IConfigure {
     /**
      * DAO Package
      *
-     * @return
+     * @return daopackage
      */
     String daoPackage();
 
@@ -128,21 +130,21 @@ public interface IConfigure {
     /**
      * 返回作者
      *
-     * @return
+     * @return author
      */
     String author();
 
     /**
      * 日期格式
      *
-     * @return
+     * @return dateformat
      */
     String dateFormat();
 
     /**
      * 是否启用lombok
      *
-     * @return
+     * @return enable lombok
      */
     Boolean lombok();
 }
