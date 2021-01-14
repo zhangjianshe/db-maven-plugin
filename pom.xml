@@ -4,7 +4,7 @@
     <groupId>cn.mapway</groupId>
     <artifactId>db-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <name>db-maven-plugin Maven Mojo</name>
     <url>http://maven.mapway.cn</url>
     <properties>
