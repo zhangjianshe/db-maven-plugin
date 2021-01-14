@@ -12,12 +12,15 @@ import org.nutz.lang.Strings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * 生成数据库访问层DB for MyBatisPlus.
  */
 @Mojo(name = "dbDao", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class DbDao extends AbstractMojo {
+
+    private final static Logger logger=Logger.getLogger(DbDao.class.getName());
 
 
     /**
@@ -140,6 +143,7 @@ public class DbDao extends AbstractMojo {
 
         IConfigure configure = new IConfigure() {
 
+
             @Override
             public String getUser() {
                 return user;
@@ -183,20 +187,24 @@ public class DbDao extends AbstractMojo {
 
             @Override
             public List<String> includes() {
-                if (Strings.isBlank(includes)) {
-                    return new ArrayList<String>();
+                List<String> ins=parseLines(includes);
+                logger.info("要处理的数据库表");
+                for(String tableName:ins)
+                {
+                    logger.info(tableName);
                 }
-                String[] items = Strings.split(includes, false, ',', ';');
-                return Lang.array2list(items);
+                return ins;
             }
 
             @Override
             public List<String> excludes() {
-                if (Strings.isBlank(includes)) {
-                    return new ArrayList<String>();
+                List<String> exs=parseLines(excludes);
+                logger.info("要排除的数据库表");
+                for(String tableName:exs)
+                {
+                    logger.info(tableName);
                 }
-                String[] items = Strings.split(includes, false, ',', ';');
-                return Lang.array2list(items);
+                return exs;
             }
 
             @Override
@@ -254,5 +262,21 @@ public class DbDao extends AbstractMojo {
         DB2Code app = new DB2Code(configure);
         app.run();
 
+    }
+
+    private static List<String> parseLines(String data) {
+        if (Strings.isBlank(data)) {
+            return new ArrayList<String>();
+        }
+        data = Strings.trim(data);
+        String[] items = Strings.split(data, false, ',', ';');
+        ArrayList<String> list = new ArrayList<>(30);
+        for (String item : items) {
+            item = Strings.trim(item);
+            if (!Strings.isBlank(item)) {
+                list.add(item);
+            }
+        }
+        return list;
     }
 }
