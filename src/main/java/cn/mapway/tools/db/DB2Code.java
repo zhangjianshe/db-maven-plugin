@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 import org.nutz.json.Json;
 import org.nutz.lang.Strings;
 import schemacrawler.inclusionrule.RegularExpressionInclusionRule;
@@ -208,6 +209,7 @@ public class DB2Code {
             typeBuilder.addAnnotation(AnnotationSpec.builder(Builder.class).build());
             typeBuilder.addAnnotation(AnnotationSpec.builder(NoArgsConstructor.class).build());
             typeBuilder.addAnnotation(AnnotationSpec.builder(AllArgsConstructor.class).build());
+            typeBuilder.addAnnotation(AnnotationSpec.builder(Accessors.class).addMember("chain","true").build());
         }
 
         for (Column column : table.getColumns()) {
