@@ -38,6 +38,11 @@ public class MainTest {
         IConfigure config = new IConfigure() {
 
             @Override
+            public Boolean exportFieldName() {
+                return true;
+            }
+
+            @Override
             public List<String> includes() {
                 return Lang.array2list(Lang.array("sys_dictionary"));
             }
@@ -57,10 +62,6 @@ public class MainTest {
                 return dp.getUrl();
             }
 
-            @Override
-            public int getMaxConnections() {
-                return 0;
-            }
 
             @Override
             public String getSchema() {
@@ -88,8 +89,13 @@ public class MainTest {
             }
 
             @Override
-            public String getPath() {
-                return dp.getPath();
+            public String daoPath() {
+                return "d:\\code\\";
+            }
+
+            @Override
+            public String entityPath() {
+                return "d:\\code";
             }
 
             @Override

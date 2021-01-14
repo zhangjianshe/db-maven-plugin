@@ -7,7 +7,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 
 import java.util.ArrayList;
@@ -20,14 +19,20 @@ import java.util.logging.Logger;
 @Mojo(name = "dbDao", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class DbDao extends AbstractMojo {
 
-    private final static Logger logger=Logger.getLogger(DbDao.class.getName());
+    private final static Logger logger = Logger.getLogger(DbDao.class.getName());
 
 
     /**
      * The path.
      */
-    @Parameter(defaultValue = "${project.basedir}/src/main/java", property = "path", required = true)
-    private String path;
+    @Parameter(defaultValue = "${project.basedir}/src/main/java", property = "daoPath", required = true)
+    private String daoPath;
+
+    /**
+     * The path.
+     */
+    @Parameter(defaultValue = "${project.basedir}/src/main/java", property = "entityPath", required = true)
+    private String entityPath;
 
     /**
      * The driver.
@@ -138,6 +143,28 @@ public class DbDao extends AbstractMojo {
     @Parameter(defaultValue = "", property = "excludes", required = false)
     private String excludes;
 
+    /**
+     * 是否输出字段的静态名称,缺省生成
+     */
+    @Parameter(defaultValue = "true", property = "exportFieldName", required = false)
+    private Boolean exportFieldName;
+
+    private static List<String> parseLines(String data) {
+        if (Strings.isBlank(data)) {
+            return new ArrayList<String>();
+        }
+        data = Strings.trim(data);
+        String[] items = Strings.split(data, false, ',', ';');
+        ArrayList<String> list = new ArrayList<>(30);
+        for (String item : items) {
+            item = Strings.trim(item);
+            if (!Strings.isBlank(item)) {
+                list.add(item);
+            }
+        }
+        return list;
+    }
+
     public void execute()
             throws MojoExecutionException {
 
@@ -154,10 +181,6 @@ public class DbDao extends AbstractMojo {
                 return schema;
             }
 
-            @Override
-            public String getPath() {
-                return path;
-            }
 
             @Override
             public String getPassword() {
@@ -174,11 +197,16 @@ public class DbDao extends AbstractMojo {
                 return daoPackage;
             }
 
+            @Override
+            public String daoPath() {
+                return daoPath;
+            }
 
             @Override
-            public int getMaxConnections() {
-                return 10;
+            public String entityPath() {
+                return entityPath;
             }
+
 
             @Override
             public String getJdbcUrl() {
@@ -186,11 +214,15 @@ public class DbDao extends AbstractMojo {
             }
 
             @Override
+            public Boolean exportFieldName() {
+                return exportFieldName;
+            }
+
+            @Override
             public List<String> includes() {
-                List<String> ins=parseLines(includes);
+                List<String> ins = parseLines(includes);
                 logger.info("要处理的数据库表");
-                for(String tableName:ins)
-                {
+                for (String tableName : ins) {
                     logger.info(tableName);
                 }
                 return ins;
@@ -198,10 +230,9 @@ public class DbDao extends AbstractMojo {
 
             @Override
             public List<String> excludes() {
-                List<String> exs=parseLines(excludes);
+                List<String> exs = parseLines(excludes);
                 logger.info("要排除的数据库表");
-                for(String tableName:exs)
-                {
+                for (String tableName : exs) {
                     logger.info(tableName);
                 }
                 return exs;
@@ -262,21 +293,5 @@ public class DbDao extends AbstractMojo {
         DB2Code app = new DB2Code(configure);
         app.run();
 
-    }
-
-    private static List<String> parseLines(String data) {
-        if (Strings.isBlank(data)) {
-            return new ArrayList<String>();
-        }
-        data = Strings.trim(data);
-        String[] items = Strings.split(data, false, ',', ';');
-        ArrayList<String> list = new ArrayList<>(30);
-        for (String item : items) {
-            item = Strings.trim(item);
-            if (!Strings.isBlank(item)) {
-                list.add(item);
-            }
-        }
-        return list;
     }
 }

@@ -10,13 +10,22 @@ import java.util.List;
 public interface IConfigure {
 
     /**
+     * 输出字段名称的静态常量
+     *
+     * @return true
+     */
+    Boolean exportFieldName();
+
+    /**
      * 需要生成的列表
+     *
      * @return list
      */
     List<String> includes();
 
     /**
      * 需要生成的列表
+     *
      * @return list
      */
     List<String> excludes();
@@ -36,12 +45,6 @@ public interface IConfigure {
      */
     String getJdbcUrl();
 
-    /**
-     * Gets the max connections.
-     *
-     * @return the max connections
-     */
-    int getMaxConnections();
 
     /**
      * Gets the schema.
@@ -78,12 +81,20 @@ public interface IConfigure {
      */
     String daoPackage();
 
+
     /**
-     * Gets the path.
+     * DAO Mapper路径
      *
-     * @return the path
+     * @return
      */
-    String getPath();
+    String daoPath();
+
+    /**
+     * Entity Mapper路径
+     *
+     * @return
+     */
+    String entityPath();
 
     /**
      * Gets mapper.

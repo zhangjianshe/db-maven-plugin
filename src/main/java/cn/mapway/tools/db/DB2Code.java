@@ -183,7 +183,7 @@ public class DB2Code {
 
         JavaFile javaFile = JavaFile.builder(configure.daoPackage(), typeBuilder.build()).build();
         try {
-            javaFile.writeTo(new File(configure.getPath()));
+            javaFile.writeTo(new File(configure.daoPath()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -209,7 +209,7 @@ public class DB2Code {
             typeBuilder.addAnnotation(AnnotationSpec.builder(Builder.class).build());
             typeBuilder.addAnnotation(AnnotationSpec.builder(NoArgsConstructor.class).build());
             typeBuilder.addAnnotation(AnnotationSpec.builder(AllArgsConstructor.class).build());
-            typeBuilder.addAnnotation(AnnotationSpec.builder(Accessors.class).addMember("chain","true").build());
+            typeBuilder.addAnnotation(AnnotationSpec.builder(Accessors.class).addMember("chain", "true").build());
         }
 
         for (Column column : table.getColumns()) {
@@ -261,7 +261,7 @@ public class DB2Code {
         JavaFile javaFile = JavaFile.builder(configure.entityPackage(), typeBuilder.build()).build();
         try {
 
-            javaFile.writeTo(new File(configure.getPath()));
+            javaFile.writeTo(new File(configure.entityPath()));
         } catch (IOException e) {
             e.printStackTrace();
         }
