@@ -29,6 +29,7 @@ import schemacrawler.utility.SchemaCrawlerUtility;
 import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -256,7 +257,7 @@ public class DB2Code {
             }
             typeBuilder.addField(fieldBuilder.build());
         }
-
+        typeBuilder.addSuperinterface(Serializable.class);
 
         JavaFile javaFile = JavaFile.builder(configure.entityPackage(), typeBuilder.build()).build();
         try {
