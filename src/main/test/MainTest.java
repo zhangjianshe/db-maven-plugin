@@ -44,7 +44,7 @@ public class MainTest {
 
             @Override
             public List<String> includes() {
-                return Lang.array2list(Lang.array("sys_dictionary"));
+                return Lang.array2list(Lang.array("sys_dictionary","BZ_ROOMCONFIG_DETAIL"));
             }
 
             @Override
@@ -95,7 +95,7 @@ public class MainTest {
 
             @Override
             public String entityPath() {
-                return "d:\\code";
+                return "d:\\code\\";
             }
 
             @Override

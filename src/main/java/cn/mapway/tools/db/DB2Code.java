@@ -17,10 +17,7 @@ import lombok.experimental.Accessors;
 import org.nutz.json.Json;
 import org.nutz.lang.Strings;
 import schemacrawler.inclusionrule.RegularExpressionInclusionRule;
-import schemacrawler.schema.Catalog;
-import schemacrawler.schema.Column;
-import schemacrawler.schema.Schema;
-import schemacrawler.schema.Table;
+import schemacrawler.schema.*;
 import schemacrawler.schemacrawler.*;
 import schemacrawler.tools.databaseconnector.DatabaseConnectionSource;
 import schemacrawler.tools.databaseconnector.SingleUseUserCredentials;
@@ -110,7 +107,7 @@ public class DB2Code {
                 LoadOptionsBuilder.builder()
                         // Set what details are required in the schema - this affects the
                         // time taken to crawl the schema
-                        .withSchemaInfoLevel(SchemaInfoLevelBuilder.standard());
+                        .withSchemaInfoLevel(SchemaInfoLevelBuilder.detailed());
 
         final SchemaCrawlerOptions options =
                 SchemaCrawlerOptionsBuilder.newSchemaCrawlerOptions()
@@ -221,11 +218,8 @@ public class DB2Code {
         }
 
         for (Column column : table.getColumns()) {
-            Class<?> type = column.getColumnDataType().getTypeMappedClass();
-            if (type.getCanonicalName().equals(Timestamp.class.getCanonicalName())) {
-                // Timestamp --> Date
-                type = Date.class;
-            }
+
+            Class type = getDataType(column, column.getColumnDataType());
             FieldSpec.Builder fieldBuilder = FieldSpec.builder(type,
                     camelConvert.convert(column.getName()),
                     Modifier.PRIVATE);
@@ -239,6 +233,7 @@ public class DB2Code {
                             .addMember("value", "pattern=$S", configure.dateFormat()).build());
                 }
             }
+
             fieldBuilder.addJavadoc("$L \r\n缺省值:$L\r\n数据库字段长度:$L($L)",
                     u(column.getRemarks()), column.getDefaultValue(), column.getSize(),
                     column.isNullable() ? "允许为空" : "不允许为空");
@@ -266,5 +261,21 @@ public class DB2Code {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    Class getDataType(Column c, ColumnDataType columnDataType) {
+
+        if (columnDataType.getName().equals("NUMBER")) {
+
+            if (c.getDecimalDigits() == 0) {
+                if (c.getSize() < 10) {
+                    return Integer.class;
+                }
+                return Long.class;
+            } else {
+                return Double.class;
+            }
+        }
+        return columnDataType.getTypeMappedClass();
     }
 }
