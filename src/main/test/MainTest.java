@@ -38,13 +38,13 @@ public class MainTest {
         IConfigure config = new IConfigure() {
 
             @Override
-            public Boolean exportFieldName() {
-                return true;
+            public Boolean withStaticField() {
+                return false;
             }
 
             @Override
             public List<String> includes() {
-                return Lang.array2list(Lang.array("sys_dictionary","BZ_ROOMCONFIG_DETAIL"));
+                return Lang.array2list(Lang.array("sys_dictionary", "BZ_ROOMCONFIG_DETAIL"));
             }
 
             @Override

@@ -210,11 +210,14 @@ public class DB2Code {
             typeBuilder.addAnnotation(AnnotationSpec.builder(Accessors.class).addMember("chain", "true").build());
         }
 
-        for (Column column : table.getColumns()) {
-            FieldSpec.Builder fieldBuilder = FieldSpec.builder(String.class, "FLD_" + column.getName().toUpperCase(), Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-                    .initializer("$S", column.getName());
-            fieldBuilder.addJavadoc("$L\r\n数据库字段序号:$L", column.getName(), "" + column.getOrdinalPosition());
-            typeBuilder.addField(fieldBuilder.build());
+        //输出静态字段名称
+        if (configure.withStaticField()) {
+            for (Column column : table.getColumns()) {
+                FieldSpec.Builder fieldBuilder = FieldSpec.builder(String.class, "FLD_" + column.getName().toUpperCase(), Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                        .initializer("$S", column.getName());
+                fieldBuilder.addJavadoc("$L\r\n数据库字段序号:$L", column.getName(), "" + column.getOrdinalPosition());
+                typeBuilder.addField(fieldBuilder.build());
+            }
         }
 
         for (Column column : table.getColumns()) {

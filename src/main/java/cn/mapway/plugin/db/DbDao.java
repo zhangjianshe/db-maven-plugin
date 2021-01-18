@@ -146,8 +146,8 @@ public class DbDao extends AbstractMojo {
     /**
      * 是否输出字段的静态名称,缺省生成
      */
-    @Parameter(defaultValue = "true", property = "exportFieldName", required = false)
-    private Boolean exportFieldName;
+    @Parameter(defaultValue = "false", property = "withStaticField", required = false)
+    private Boolean withStaticField;
 
     private static List<String> parseLines(String data) {
         if (Strings.isBlank(data)) {
@@ -213,10 +213,6 @@ public class DbDao extends AbstractMojo {
                 return jdbcUrl;
             }
 
-            @Override
-            public Boolean exportFieldName() {
-                return exportFieldName;
-            }
 
             @Override
             public List<String> includes() {
@@ -287,6 +283,11 @@ public class DbDao extends AbstractMojo {
             @Override
             public Boolean lombok() {
                 return lombok;
+            }
+
+            @Override
+            public Boolean withStaticField() {
+                return withStaticField;
             }
         };
 

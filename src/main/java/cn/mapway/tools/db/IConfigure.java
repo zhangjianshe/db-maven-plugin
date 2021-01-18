@@ -9,12 +9,6 @@ import java.util.List;
  */
 public interface IConfigure {
 
-    /**
-     * 输出字段名称的静态常量
-     *
-     * @return true
-     */
-    Boolean exportFieldName();
 
     /**
      * 需要生成的列表
@@ -158,4 +152,11 @@ public interface IConfigure {
      * @return enable lombok
      */
     Boolean lombok();
+
+    /**
+     * 输出字段名称的静态常量
+     *
+     * @return
+     */
+    Boolean withStaticField();
 }
