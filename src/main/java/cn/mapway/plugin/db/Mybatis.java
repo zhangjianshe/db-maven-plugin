@@ -16,10 +16,10 @@ import java.util.logging.Logger;
 /**
  * 生成数据库访问层DB for MyBatisPlus.
  */
-@Mojo(name = "dbDao", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
-public class DbDao extends AbstractMojo {
+@Mojo(name = "mybatis", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
+public class Mybatis extends AbstractMojo {
 
-    private final static Logger logger = Logger.getLogger(DbDao.class.getName());
+    private final static Logger logger = Logger.getLogger(Mybatis.class.getName());
 
 
     /**
