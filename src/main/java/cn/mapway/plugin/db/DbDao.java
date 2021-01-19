@@ -149,6 +149,12 @@ public class DbDao extends AbstractMojo {
     @Parameter(defaultValue = "false", property = "withStaticField", required = false)
     private Boolean withStaticField;
 
+    /**
+     * 是否覆盖DAO层,缺省是不覆盖 false
+     */
+    @Parameter(defaultValue = "false", property = "overrideDao", required = false)
+    private Boolean overrideDao;
+
     private static List<String> parseLines(String data) {
         if (Strings.isBlank(data)) {
             return new ArrayList<String>();
@@ -288,6 +294,11 @@ public class DbDao extends AbstractMojo {
             @Override
             public Boolean withStaticField() {
                 return withStaticField;
+            }
+
+            @Override
+            public Boolean overrideDao() {
+                return overrideDao;
             }
         };
 

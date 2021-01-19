@@ -44,7 +44,7 @@ public class MainTest {
 
             @Override
             public List<String> includes() {
-                return Lang.array2list(Lang.array("hddp_design_approval","sys_dictionary", "BZ_ROOMCONFIG_DETAIL"));
+                return Lang.array2list(Lang.array("hddp_design_approval", "sys_dictionary", "BZ_ROOMCONFIG_DETAIL"));
             }
 
             @Override
@@ -140,6 +140,11 @@ public class MainTest {
 
             @Override
             public Boolean lombok() {
+                return true;
+            }
+
+            @Override
+            public Boolean overrideDao() {
                 return true;
             }
         };

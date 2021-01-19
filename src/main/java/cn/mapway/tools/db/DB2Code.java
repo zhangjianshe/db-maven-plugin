@@ -27,6 +27,8 @@ import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -169,9 +171,11 @@ public class DB2Code {
      * @param configure
      */
     private void exportTableDao(Table table, IConfigure configure) {
+
+        String fileName=getClassTypeName(table.getName()) + "Dao";
         ClassName cn = ClassName.get(configure.entityPackage(), getClassTypeName(table.getName()) + "Entity");
         ParameterizedTypeName t = ParameterizedTypeName.get(ClassName.get(BaseMapper.class), cn);
-        TypeSpec.Builder typeBuilder = TypeSpec.interfaceBuilder(getClassTypeName(table.getName()) + "Dao")
+        TypeSpec.Builder typeBuilder = TypeSpec.interfaceBuilder(fileName)
                 .addModifiers(Modifier.PUBLIC)
                 .addSuperinterface(t);
 
@@ -179,12 +183,38 @@ public class DB2Code {
                 table.getSchema().getCatalogName(), table.getName(),
                 u(table.getRemarks()), table.getDefinition(), configure.author());
 
-        JavaFile javaFile = JavaFile.builder(configure.daoPackage(), typeBuilder.build()).build();
+
+        if (!configure.overrideDao()) {//不覆盖
+            Boolean exist = isFileExist(configure.daoPath(), configure.daoPackage(), fileName);
+            if (exist) {
+                logger.warning("存在DAO文件" + fileName);
+                return;
+            }
+        }
+
         try {
+            JavaFile javaFile = JavaFile.builder(configure.daoPackage(), typeBuilder.build()).build();
             javaFile.writeTo(new File(configure.daoPath()));
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private Boolean isFileExist(String daoPath, String daoPackage, String fileName) {
+        Path outputDirectory = new File(daoPath).toPath();
+        if (!daoPackage.isEmpty()) {
+            for (String packageComponent : configure.daoPackage().split("\\.")) {
+                outputDirectory = outputDirectory.resolve(packageComponent);
+            }
+            try {
+                Files.createDirectories(outputDirectory);
+            } catch (IOException e) {
+            }
+        }
+
+        Path outputPath = outputDirectory.resolve(fileName);
+        return outputPath.toFile().exists();
+
     }
 
     /**
@@ -258,6 +288,7 @@ public class DB2Code {
         typeBuilder.addSuperinterface(Serializable.class);
 
         JavaFile javaFile = JavaFile.builder(configure.entityPackage(), typeBuilder.build()).build();
+
         try {
 
             javaFile.writeTo(new File(configure.entityPath()));

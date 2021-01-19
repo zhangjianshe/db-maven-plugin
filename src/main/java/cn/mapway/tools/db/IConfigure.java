@@ -159,4 +159,10 @@ public interface IConfigure {
      * @return
      */
     Boolean withStaticField();
+
+    /**
+     * 是否覆盖DAO
+     * @return
+     */
+    Boolean overrideDao();
 }
