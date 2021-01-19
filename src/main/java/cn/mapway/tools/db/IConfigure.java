@@ -161,7 +161,15 @@ public interface IConfigure {
     Boolean withStaticField();
 
     /**
+     * 是否输出Swagger文档注解
+     *
+     * @return
+     */
+    Boolean withSwagger();
+
+    /**
      * 是否覆盖DAO
+     *
      * @return
      */
     Boolean overrideDao();

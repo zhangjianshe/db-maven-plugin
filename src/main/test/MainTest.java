@@ -145,6 +145,11 @@ public class MainTest {
 
             @Override
             public Boolean overrideDao() {
+                return false;
+            }
+
+            @Override
+            public Boolean withSwagger() {
                 return true;
             }
         };

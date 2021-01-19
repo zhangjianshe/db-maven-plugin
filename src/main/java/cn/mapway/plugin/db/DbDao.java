@@ -150,6 +150,12 @@ public class DbDao extends AbstractMojo {
     private Boolean withStaticField;
 
     /**
+     * 是否输出Swagger注解,缺省false
+     */
+    @Parameter(defaultValue = "false", property = "withSwagger", required = false)
+    private Boolean withSwagger;
+
+    /**
      * 是否覆盖DAO层,缺省是不覆盖 false
      */
     @Parameter(defaultValue = "false", property = "overrideDao", required = false)
@@ -299,6 +305,11 @@ public class DbDao extends AbstractMojo {
             @Override
             public Boolean overrideDao() {
                 return overrideDao;
+            }
+
+            @Override
+            public Boolean withSwagger() {
+                return withSwagger;
             }
         };
 

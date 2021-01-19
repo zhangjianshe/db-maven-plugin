@@ -185,7 +185,7 @@ public class DB2Code {
 
 
         if (!configure.overrideDao()) {//不覆盖
-            Boolean exist = isFileExist(configure.daoPath(), configure.daoPackage(), fileName);
+            Boolean exist = isFileExist(configure.daoPath(), configure.daoPackage(), fileName+".java");
             if (exist) {
                 logger.warning("存在DAO文件" + fileName);
                 return;
