@@ -1,3 +1,7 @@
+# how to compile it
+
+mvn clean package deploy -Pziroom
+
 #how to use it
 
 pom.xml文件中加入 profile
