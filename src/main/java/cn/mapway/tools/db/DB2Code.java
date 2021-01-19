@@ -172,20 +172,24 @@ public class DB2Code {
      */
     private void exportTableDao(Table table, IConfigure configure) {
 
-        String fileName=getClassTypeName(table.getName()) + "Dao";
+        String fileName = getClassTypeName(table.getName()) + "Dao";
         ClassName cn = ClassName.get(configure.entityPackage(), getClassTypeName(table.getName()) + "Entity");
         ParameterizedTypeName t = ParameterizedTypeName.get(ClassName.get(BaseMapper.class), cn);
         TypeSpec.Builder typeBuilder = TypeSpec.interfaceBuilder(fileName)
                 .addModifiers(Modifier.PUBLIC)
                 .addSuperinterface(t);
 
-        typeBuilder.addJavadoc("<b>$L.$L</b>\r\n$L\r\n$L\r\n@author $L",
+        typeBuilder.addJavadoc("<b>$L.$L</b>\r\n$L\r\n@author $L\r\n",
                 table.getSchema().getCatalogName(), table.getName(),
-                u(table.getRemarks()), table.getDefinition(), configure.author());
+                u(table.getRemarks()), configure.author());
+        typeBuilder.addJavadoc("==================字段定义================\r\n");
+        for (Column c : table.getColumns()) {
+            typeBuilder.addJavadoc("$L\t$L\t$L\r\n", c.getName(), c.getColumnDataType().getName(), c.getRemarks());
+        }
 
 
         if (!configure.overrideDao()) {//不覆盖
-            Boolean exist = isFileExist(configure.daoPath(), configure.daoPackage(), fileName+".java");
+            Boolean exist = isFileExist(configure.daoPath(), configure.daoPackage(), fileName + ".java");
             if (exist) {
                 logger.warning("存在DAO文件" + fileName);
                 return;

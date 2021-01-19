@@ -145,7 +145,7 @@ public class MainTest {
 
             @Override
             public Boolean overrideDao() {
-                return false;
+                return true;
             }
 
             @Override
