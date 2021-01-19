@@ -279,7 +279,10 @@ public class DB2Code {
                 return Double.class;
             }
         }
-        if (columnDataType.getName().compareToIgnoreCase("TIMESTAMP") == 0) {
+        if (
+                columnDataType.getName().compareToIgnoreCase("TIMESTAMP") == 0
+                        || columnDataType.getName().compareToIgnoreCase("DATETIME") == 0
+        ) {
             return Date.class;
         }
         return columnDataType.getTypeMappedClass();
