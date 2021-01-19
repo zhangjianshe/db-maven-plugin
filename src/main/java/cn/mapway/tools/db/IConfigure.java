@@ -33,9 +33,8 @@ public interface IConfigure {
     String getDriver();
 
     /**
-     * ��ݿ�����URL.
-     *
-     * @return the jdbcurl
+     * JDBCURL
+     * @return JDBCURL
      */
     String getJdbcUrl();
 
@@ -79,14 +78,14 @@ public interface IConfigure {
     /**
      * DAO Mapper路径
      *
-     * @return
+     * @return DAO Mapper路径
      */
     String daoPath();
 
     /**
      * Entity Mapper路径
      *
-     * @return
+     * @return Entity Mapper路径
      */
     String entityPath();
 
@@ -156,21 +155,21 @@ public interface IConfigure {
     /**
      * 输出字段名称的静态常量
      *
-     * @return
+     * @return withStaticField
      */
     Boolean withStaticField();
 
     /**
      * 是否输出Swagger文档注解
      *
-     * @return
+     * @return enabled Swagger
      */
     Boolean withSwagger();
 
     /**
      * 是否覆盖DAO
      *
-     * @return
+     * @return overideDao
      */
     Boolean overrideDao();
 }
