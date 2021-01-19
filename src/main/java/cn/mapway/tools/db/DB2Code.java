@@ -279,6 +279,9 @@ public class DB2Code {
                 return Double.class;
             }
         }
+        if (columnDataType.getName().compareToIgnoreCase("TIMESTAMP") == 0) {
+            return Date.class;
+        }
         return columnDataType.getTypeMappedClass();
     }
 }
