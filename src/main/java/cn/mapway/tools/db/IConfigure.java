@@ -172,4 +172,10 @@ public interface IConfigure {
      * @return overideDao
      */
     Boolean overrideDao();
+
+    /**
+     * MyBatis DAO 选择的数据源名称
+     * @return
+     */
+    String  dbSourceName();
 }

@@ -44,7 +44,7 @@ public class MainTest {
 
             @Override
             public List<String> includes() {
-                return Lang.array2list(Lang.array("hddp_design_approval", "sys_dictionary", "BZ_ROOMCONFIG_DETAIL","BZ_ATTACHMENT_NEW"));
+                return Lang.array2list(Lang.array("hddp_design_approval", "sys_dictionary", "BZ_ROOMCONFIG_DETAIL", "BZ_ATTACHMENT_NEW"));
             }
 
             @Override
@@ -151,6 +151,11 @@ public class MainTest {
             @Override
             public Boolean withSwagger() {
                 return true;
+            }
+
+            @Override
+            public String dbSourceName() {
+                return "com.zrpd.exe.DataSourceConfig.DB_ORACLE_MASTER";
             }
         };
         DB2Code app = new DB2Code(config);

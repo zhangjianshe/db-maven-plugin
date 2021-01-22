@@ -161,6 +161,12 @@ public class Mybatis extends AbstractMojo {
     @Parameter(defaultValue = "false", property = "overrideDao", required = false)
     private Boolean overrideDao;
 
+    /**
+     * DB SOURCE 名称
+     */
+    @Parameter(defaultValue = "", property = "dbSourceName", required = false)
+    private String dbSourceName;
+
     private static List<String> parseLines(String data) {
         if (Strings.isBlank(data)) {
             return new ArrayList<String>();
@@ -308,9 +314,15 @@ public class Mybatis extends AbstractMojo {
             }
 
             @Override
+            public String dbSourceName() {
+                return dbSourceName;
+            }
+
+            @Override
             public Boolean withSwagger() {
                 return withSwagger;
             }
+
         };
 
         DB2Code app = new DB2Code(configure);

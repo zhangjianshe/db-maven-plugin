@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.nutz.json.Json;
 import org.nutz.lang.Strings;
+import org.springframework.stereotype.Component;
 import schemacrawler.inclusionrule.RegularExpressionInclusionRule;
 import schemacrawler.schema.*;
 import schemacrawler.schemacrawler.*;
@@ -140,6 +141,7 @@ public class DB2Code {
                     }
                 }
                 exportTableEntity(table, configure);
+                exportTableMapper(table, configure);
                 exportTableDao(table, configure);
             }
         }
@@ -170,11 +172,14 @@ public class DB2Code {
      * @param table
      * @param configure
      */
-    private void exportTableDao(Table table, IConfigure configure) {
+    private void exportTableMapper(Table table, IConfigure configure) {
 
-        String fileName = getClassTypeName(table.getName()) + "Dao";
-        ClassName cn = ClassName.get(configure.entityPackage(), getClassTypeName(table.getName()) + "Entity");
-        ParameterizedTypeName t = ParameterizedTypeName.get(ClassName.get(BaseMapper.class), cn);
+        String fileName = getClassTypeName(table.getName()) + "Mapper";
+
+        ClassName entityName = ClassName.get(configure.entityPackage(), getClassTypeName(table.getName()) + "Entity");
+
+        ParameterizedTypeName t = ParameterizedTypeName.get(ClassName.get(BaseMapper.class), entityName);
+
         TypeSpec.Builder typeBuilder = TypeSpec.interfaceBuilder(fileName)
                 .addModifiers(Modifier.PUBLIC)
                 .addSuperinterface(t);
@@ -189,15 +194,15 @@ public class DB2Code {
 
 
         if (!configure.overrideDao()) {//不覆盖
-            Boolean exist = isFileExist(configure.daoPath(), configure.daoPackage(), fileName + ".java");
+            Boolean exist = isFileExist(configure.daoPath(), configure.daoPackage() + ".mapper", fileName + ".java");
             if (exist) {
-                logger.warning("存在DAO文件" + fileName);
+                logger.warning("存在Mapper文件" + fileName);
                 return;
             }
         }
 
         try {
-            JavaFile javaFile = JavaFile.builder(configure.daoPackage(), typeBuilder.build()).build();
+            JavaFile javaFile = JavaFile.builder(configure.daoPackage() + ".mapper", typeBuilder.build()).build();
             javaFile.writeTo(new File(configure.daoPath()));
         } catch (IOException e) {
             e.printStackTrace();
@@ -219,6 +224,63 @@ public class DB2Code {
         Path outputPath = outputDirectory.resolve(fileName);
         return outputPath.toFile().exists();
 
+    }
+
+    /**
+     * 输出Mapper
+     *
+     * @param table
+     */
+    private void exportTableDao(Table table, IConfigure configure) {
+        String fileName = getClassTypeName(table.getName()) + "Dao";
+
+        ClassName entityName = ClassName.get(configure.entityPackage(), getClassTypeName(table.getName()) + "Entity");
+
+        ClassName mapperName = ClassName.get(configure.daoPackage() + ".mapper", getClassTypeName(table.getName()) + "Mapper");
+
+        ClassName parentClassName = ClassName.get("com.baomidou.mybatisplus.extension.service.impl", "ServiceImpl");
+        ParameterizedTypeName t = ParameterizedTypeName.get(parentClassName, mapperName, entityName);
+
+        TypeSpec.Builder typeBuilder = TypeSpec.classBuilder(fileName)
+                .addModifiers(Modifier.PUBLIC)
+                .superclass(t);
+
+
+        typeBuilder.addAnnotation(AnnotationSpec.builder(Component.class).build());
+
+        if (Strings.isNotBlank(configure.dbSourceName())) {
+            //有数据源可以选择
+            //添加注解 com.ziroom.hddp.common.db.DbSource
+
+            AnnotationSpec.builder(Component.class).build();
+            ClassName cn = ClassName.get("com.ziroom.hddp.common.db", "DbSource");
+
+            AnnotationSpec.Builder builder = null;
+            if (configure.dbSourceName().startsWith("\"")) {
+                builder = AnnotationSpec.builder(cn).addMember("value", "$L", configure.dbSourceName());
+            } else {
+                ClassName className = ClassName.bestGuess(configure.dbSourceName());
+                builder = AnnotationSpec.builder(cn).addMember("value", "$T", className);
+            }
+            typeBuilder.addAnnotation(builder.build());
+
+        }
+
+
+        if (!configure.overrideDao()) {//不覆盖
+            Boolean exist = isFileExist(configure.daoPath(), configure.daoPackage() + ".service", fileName + ".java");
+            if (exist) {
+                logger.warning("存在Dao文件" + fileName);
+                return;
+            }
+        }
+
+        try {
+            JavaFile javaFile = JavaFile.builder(configure.daoPackage() + ".service", typeBuilder.build()).build();
+            javaFile.writeTo(new File(configure.daoPath()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
