@@ -34,7 +34,7 @@ public class MainTest {
                 .path("d:\\code\\").build();
 
 
-        final DbParam dp = p1;
+        final DbParam dp = p3;
         IConfigure config = new IConfigure() {
 
             @Override
@@ -44,7 +44,7 @@ public class MainTest {
 
             @Override
             public List<String> includes() {
-                return Lang.array2list(Lang.array("hddp_design_approval", "sys_dictionary", "BZ_ROOMCONFIG_DETAIL"));
+                return Lang.array2list(Lang.array("hddp_design_approval", "sys_dictionary", "BZ_ROOMCONFIG_DETAIL","BZ_ATTACHMENT_NEW"));
             }
 
             @Override

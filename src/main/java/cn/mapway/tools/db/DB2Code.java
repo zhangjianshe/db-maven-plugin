@@ -314,9 +314,12 @@ public class DB2Code {
                 return Double.class;
             }
         }
+        String typeName = columnDataType.getName().toUpperCase();
         if (
-                columnDataType.getName().compareToIgnoreCase("TIMESTAMP") == 0
-                        || columnDataType.getName().compareToIgnoreCase("DATETIME") == 0
+                typeName.startsWith("TIMESTAMP")
+                        || typeName.startsWith("DATETIME")
+                        || typeName.startsWith("DATE")
+
         ) {
             return Date.class;
         }
