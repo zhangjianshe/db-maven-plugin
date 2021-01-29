@@ -34,7 +34,7 @@ public class MainTest {
                 .path("d:\\code\\").build();
 
 
-        final DbParam dp = p3;
+        final DbParam dp = p1;
         IConfigure config = new IConfigure() {
 
             @Override
@@ -157,6 +157,12 @@ public class MainTest {
             public String dbSourceName() {
                 return "com.zrpd.exe.DataSourceConfig.DB_ORACLE_MASTER";
             }
+
+            @Override
+            public String mapperPath() {
+                return "d:\\code\\com\\ziroom\\hddp\\resource";
+            }
+
         };
         DB2Code app = new DB2Code(config);
         app.run();

@@ -167,6 +167,12 @@ public class Mybatis extends AbstractMojo {
     @Parameter(defaultValue = "", property = "dbSourceName", required = false)
     private String dbSourceName;
 
+    /**
+     * XML mapper的路径，缺省是资源路径
+     */
+    @Parameter(defaultValue = "${project.basedir}/src/main/resources/mybatis/mapper", property = "mapperPath", required = false)
+    private String mapperPath;
+
     private static List<String> parseLines(String data) {
         if (Strings.isBlank(data)) {
             return new ArrayList<String>();
@@ -321,6 +327,11 @@ public class Mybatis extends AbstractMojo {
             @Override
             public Boolean withSwagger() {
                 return withSwagger;
+            }
+
+            @Override
+            public String mapperPath() {
+                return mapperPath;
             }
 
         };

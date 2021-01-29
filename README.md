@@ -17,7 +17,7 @@ pom.xml文件中加入 profile
             <execution>
                 <phase>generate-sources</phase>
                 <goals>
-                    <goal>dbDao</goal>
+                    <goal>mybatis</goal>
                 </goals>
             </execution>
         </executions>
@@ -36,6 +36,7 @@ pom.xml文件中加入 profile
             <daoPackage>com.ziroom.hddp.common.dao.entity</daoPackage>
             <includes>table_name1;table_name2</includes>
             <excludes>table_name1;table_name2</excludes>
+
         </configuration>
     </plugin>
 </profile>

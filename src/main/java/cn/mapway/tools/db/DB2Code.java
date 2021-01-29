@@ -14,7 +14,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.dom4j.Element;
+import org.dom4j.Text;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
+import org.dom4j.tree.DefaultText;
 import org.nutz.json.Json;
+import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
 import org.springframework.stereotype.Component;
 import schemacrawler.inclusionrule.RegularExpressionInclusionRule;
@@ -25,6 +32,7 @@ import schemacrawler.tools.databaseconnector.SingleUseUserCredentials;
 import schemacrawler.utility.SchemaCrawlerUtility;
 
 import javax.lang.model.element.Modifier;
+import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -46,8 +54,10 @@ import java.util.logging.Logger;
  */
 public class DB2Code {
 
+    private final static String xmlBody = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\">\n" +
+            "<mapper ></mapper>";
     private static Logger logger = Logger.getLogger(DB2Code.class.getName());
-
     /**
      * configuration
      */
@@ -143,6 +153,11 @@ public class DB2Code {
                 exportTableEntity(table, configure);
                 exportTableMapper(table, configure);
                 exportTableDao(table, configure);
+                try {
+                    exportTableMapperXML(table, configure);
+                } catch (TransformerException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -284,6 +299,116 @@ public class DB2Code {
     }
 
     /**
+     * 输出table的Mapper类
+     *
+     * @param table
+     * @param configure
+     */
+    private void exportTableMapperXML(Table table, IConfigure configure) throws TransformerException {
+        String path = configure.mapperPath();
+        if (Strings.isNotBlank(path)) {
+            org.nutz.lang.Files.makeDir(new File(path));
+        }
+        String fileName = getClassTypeName(table.getName()) + "Mapper.xml";
+        String pathName = path + File.separator + fileName;
+        File file = new File(pathName);
+
+        org.dom4j.Document doc = null;
+
+
+        if (file.exists()) {
+            try {
+                SAXReader saxReader = new SAXReader();
+                doc = saxReader.read(file); // 读取XML文件,获得document对象
+            } catch (Exception ex) {
+                doc = createDoc();
+            }
+
+            org.dom4j.Element root = doc.getRootElement();
+
+            if (root.getName().equals("mapper")) {
+                //找对文件了
+            } else {
+                logger.warning(fileName + " 不是一个映射文件，请检查>" + root.getName());
+                return;
+            }
+        } else {
+            doc = createDoc();
+            org.dom4j.Element root = doc.getRootElement();
+            ClassName mapperName = ClassName.get(configure.daoPackage() + ".mapper", getClassTypeName(table.getName()) + "Mapper");
+            root.addAttribute("namespace", mapperName.canonicalName());
+        }
+
+        if (doc != null) {
+            //更新或者添加 映射节点
+            org.dom4j.Element resultMap = doc.getRootElement().element("resultMap");
+            Element allColumns = (Element) doc.selectSingleNode("mapper/sql[@id='all_columns']");
+            if (resultMap == null) {
+                resultMap = doc.getRootElement().addElement("resultMap");
+                ClassName mapperName = ClassName.get(configure.entityPackage(), getClassTypeName(table.getName()) + "Entity");
+                resultMap.addAttribute("id", mapperName.simpleName());
+                resultMap.addAttribute("type", mapperName.canonicalName());
+            }
+            if (allColumns == null) {
+                allColumns = doc.getRootElement().addElement("sql");
+                allColumns.addAttribute("id", "all_columns");
+            }
+            clearChildren(resultMap);
+
+            StringBuilder allcolumnsNames = new StringBuilder();
+
+            int index = 0;
+            //更新字段信息
+            for (Column c : table.getColumns()) {
+                org.dom4j.Element result = resultMap.addElement("result");
+                result.addAttribute("column", c.getName());
+                result.addAttribute("property", camelConvert.convert(c.getName()));
+                allcolumnsNames.append(((index++) == 0) ? "\n" : ",\n");
+                allcolumnsNames.append(c.getName());
+            }
+            allcolumnsNames.append("\n");
+            clearChildren(allColumns);
+            Text text = new DefaultText(allcolumnsNames.toString());
+            allColumns.add(text);
+
+            boolean flag = true;
+            try {
+                OutputFormat format = new OutputFormat();
+                format.setEncoding("UTF-8");
+                format.setTrimText(false);
+                format.setNewlines(true);
+                format.setIndent(true);
+                format.setExpandEmptyElements(true);
+                format.setXHTML(false);
+
+                XMLWriter writer = new XMLWriter(Streams.fileOut(pathName), format);
+                writer.write(doc);
+                writer.close();
+            } catch (Exception ex) {
+                flag = false;
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private void clearChildren(org.dom4j.Element resultMap) {
+        resultMap.clearContent();
+        resultMap.setText("");
+    }
+
+    private org.dom4j.Document createDoc() {
+
+        try {
+            SAXReader saxReader = new SAXReader();
+            org.dom4j.Document doc = saxReader.read(Streams.wrap(xmlBody.getBytes()));
+            return doc;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
      * 输出table实体类
      *
      * @param table
@@ -362,6 +487,7 @@ public class DB2Code {
             e.printStackTrace();
         }
     }
+
 
     Class getDataType(Column c, ColumnDataType columnDataType) {
 

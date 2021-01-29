@@ -34,6 +34,7 @@ public interface IConfigure {
 
     /**
      * JDBCURL
+     *
      * @return JDBCURL
      */
     String getJdbcUrl();
@@ -175,7 +176,15 @@ public interface IConfigure {
 
     /**
      * MyBatis DAO 选择的数据源名称
+     *
      * @return
      */
-    String  dbSourceName();
+    String dbSourceName();
+
+    /**
+     * Mapper XML 路径 如果没有填写 则不会输出 mapper 的XML文件
+     *
+     * @return
+     */
+    String mapperPath();
 }
