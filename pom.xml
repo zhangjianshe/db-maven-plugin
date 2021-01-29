@@ -14,8 +14,8 @@
         <java.version>1.8</java.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <gpg.keyname>1F8B2CB0A3E469D2</gpg.keyname>
-        <!--        <gpg.keyname>8F43F628BFCC2B9A</gpg.keyname>-->
+<!--        <gpg.keyname>1F8B2CB0A3E469D2</gpg.keyname>-->
+                <gpg.keyname>8F43F628BFCC2B9A</gpg.keyname>
     </properties>
     <licenses>
         <license>
@@ -34,7 +34,6 @@
         </developer>
     </developers>
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/dom4j/dom4j -->
         <dependency>
             <groupId>dom4j</groupId>
             <artifactId>dom4j</artifactId>
@@ -126,47 +125,8 @@
             </activation>
             <distributionManagement>
                 <repository>
-                    <id>ziroom-maven-central</id>
+                    <id>ziroom-central</id>
                     <url>http://maven.ziroom.com:8081/nexus/content/repositories/sms-t/</url>
-                </repository>
-            </distributionManagement>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>package-sources</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>package-javadoc</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>pro</id>
-            <distributionManagement>
-                <repository>
-                    <id>ziroom-maven-central</id>
-                    <url>http://maven.ziroom.com:8081/nexus/content/repositories/sms-online/</url>
                 </repository>
             </distributionManagement>
             <build>

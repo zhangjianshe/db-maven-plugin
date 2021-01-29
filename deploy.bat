@@ -1,1 +1,1 @@
-mvn clean package install deploy -P%1
+mvn clean compile package install deploy -P%1
