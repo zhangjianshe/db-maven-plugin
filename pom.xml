@@ -126,7 +126,7 @@
             <distributionManagement>
                 <repository>
                     <id>ziroom-central</id>
-                    <url>http://maven.ziroom.com:8081/nexus/content/repositories/sms-t/</url>
+                    <url>http://maven.ziroom.com:8081/nexus/content/repositories/sms-d/</url>
                 </repository>
             </distributionManagement>
             <build>
