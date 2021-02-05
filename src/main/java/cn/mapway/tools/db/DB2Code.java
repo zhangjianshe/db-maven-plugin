@@ -220,7 +220,7 @@ public class DB2Code {
             JavaFile javaFile = JavaFile.builder(configure.daoPackage() + ".mapper", typeBuilder.build()).build();
             javaFile.writeTo(new File(configure.daoPath()));
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.warning("输出Mapper文件出错了,(" + fileName + ")" + e.getMessage());
         }
     }
 
@@ -381,12 +381,14 @@ public class DB2Code {
                 format.setExpandEmptyElements(true);
                 format.setXHTML(false);
 
-                XMLWriter writer = new XMLWriter(Streams.fileOut(pathName), format);
+                logger.info("ready to produce " + pathName);
+                XMLWriter writer = new XMLWriter(Streams.fileOut(file), format);
                 writer.write(doc);
                 writer.close();
+
             } catch (Exception ex) {
                 flag = false;
-                ex.printStackTrace();
+                logger.info("生成XML映射文件出错了" + ex.getLocalizedMessage());
             }
         }
     }
