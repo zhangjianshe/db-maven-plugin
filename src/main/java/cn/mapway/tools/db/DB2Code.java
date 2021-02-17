@@ -318,9 +318,14 @@ public class DB2Code {
 
         if (file.exists()) {
             try {
+
                 SAXReader saxReader = new SAXReader();
+                saxReader.setValidation(false);
+                saxReader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
                 doc = saxReader.read(file); // 读取XML文件,获得document对象
             } catch (Exception ex) {
+                logger.severe(ex.getMessage());
                 doc = createDoc();
             }
 
@@ -402,6 +407,9 @@ public class DB2Code {
 
         try {
             SAXReader saxReader = new SAXReader();
+            saxReader.setValidation(false);
+            saxReader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
             org.dom4j.Document doc = saxReader.read(Streams.wrap(xmlBody.getBytes()));
             return doc;
         } catch (Exception ex) {
