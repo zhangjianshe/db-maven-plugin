@@ -227,9 +227,8 @@ public class DB2Code {
     private Boolean isFileExist(String daoPath, String daoPackage, String fileName) {
         Path outputDirectory = new File(daoPath).toPath();
         if (!daoPackage.isEmpty()) {
-            for (String packageComponent : configure.daoPackage().split("\\.")) {
-                outputDirectory = outputDirectory.resolve(packageComponent);
-            }
+            String temp=daoPackage.replace(".",File.separator);
+            outputDirectory=outputDirectory.resolve(temp);
             try {
                 Files.createDirectories(outputDirectory);
             } catch (IOException e) {
