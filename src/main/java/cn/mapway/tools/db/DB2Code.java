@@ -207,9 +207,15 @@ public class DB2Code {
             typeBuilder.addJavadoc("$L\t$L\t$L\r\n", c.getName(), c.getColumnDataType().getName(), c.getRemarks());
         }
 
-
+        String dbContext = configure.dbContext();
+        if (Strings.isNotBlank(dbContext)) {
+            dbContext = "." + dbContext;
+        } else {
+            dbContext = "";
+        }
         if (!configure.overrideDao()) {//不覆盖
-            Boolean exist = isFileExist(configure.daoPath(), configure.daoPackage() + ".mapper", fileName + ".java");
+
+            Boolean exist = isFileExist(configure.daoPath(), configure.daoPackage() + ".mapper" + dbContext, fileName + ".java");
             if (exist) {
                 logger.warning("存在Mapper文件" + fileName);
                 return;
@@ -217,7 +223,7 @@ public class DB2Code {
         }
 
         try {
-            JavaFile javaFile = JavaFile.builder(configure.daoPackage() + ".mapper", typeBuilder.build()).build();
+            JavaFile javaFile = JavaFile.builder(configure.daoPackage() + ".mapper" + dbContext, typeBuilder.build()).build();
             javaFile.writeTo(new File(configure.daoPath()));
         } catch (IOException e) {
             logger.warning("输出Mapper文件出错了,(" + fileName + ")" + e.getMessage());
@@ -227,8 +233,8 @@ public class DB2Code {
     private Boolean isFileExist(String daoPath, String daoPackage, String fileName) {
         Path outputDirectory = new File(daoPath).toPath();
         if (!daoPackage.isEmpty()) {
-            String temp=daoPackage.replace(".",File.separator);
-            outputDirectory=outputDirectory.resolve(temp);
+            String temp = daoPackage.replace(".", File.separator);
+            outputDirectory = outputDirectory.resolve(temp);
             try {
                 Files.createDirectories(outputDirectory);
             } catch (IOException e) {
@@ -250,7 +256,14 @@ public class DB2Code {
 
         ClassName entityName = ClassName.get(configure.entityPackage(), getClassTypeName(table.getName()) + "Entity");
 
-        ClassName mapperName = ClassName.get(configure.daoPackage() + ".mapper", getClassTypeName(table.getName()) + "Mapper");
+        String dbContext = configure.dbContext();
+        if (Strings.isNotBlank(dbContext)) {
+            dbContext = "." + dbContext;
+        } else {
+            dbContext = "";
+        }
+
+        ClassName mapperName = ClassName.get(configure.daoPackage() + ".mapper" + dbContext, getClassTypeName(table.getName()) + "Mapper");
 
         ClassName parentClassName = ClassName.get("com.baomidou.mybatisplus.extension.service.impl", "ServiceImpl");
         ParameterizedTypeName t = ParameterizedTypeName.get(parentClassName, mapperName, entityName);
@@ -305,11 +318,20 @@ public class DB2Code {
      */
     private void exportTableMapperXML(Table table, IConfigure configure) throws TransformerException {
         String path = configure.mapperPath();
+        String dbContext = configure.dbContext();
+        if (Strings.isNotBlank(dbContext)) {
+            dbContext = dbContext + File.separator;
+        } else {
+            dbContext = "";
+        }
+        path = path + File.separator + dbContext;
+
         if (Strings.isNotBlank(path)) {
             org.nutz.lang.Files.makeDir(new File(path));
         }
         String fileName = getClassTypeName(table.getName()) + "Mapper.xml";
-        String pathName = path + File.separator + fileName;
+
+        String pathName = path + fileName;
         File file = new File(pathName);
 
         org.dom4j.Document doc = null;
@@ -339,7 +361,13 @@ public class DB2Code {
         } else {
             doc = createDoc();
             org.dom4j.Element root = doc.getRootElement();
-            ClassName mapperName = ClassName.get(configure.daoPackage() + ".mapper", getClassTypeName(table.getName()) + "Mapper");
+            String dbContext1 = configure.dbContext();
+            if (Strings.isNotBlank(dbContext1)) {
+                dbContext1 = "." + dbContext1;
+            } else {
+                dbContext1 = "";
+            }
+            ClassName mapperName = ClassName.get(configure.daoPackage() + ".mapper" + dbContext1, getClassTypeName(table.getName()) + "Mapper");
             root.addAttribute("namespace", mapperName.canonicalName());
         }
 

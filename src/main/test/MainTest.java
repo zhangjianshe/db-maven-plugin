@@ -15,6 +15,7 @@ public class MainTest {
                 .schema("jz_design")
                 .user("dev_jiazhuang")
                 .password("ziroomdb")
+                .dbContext("jzdesign")
                 .path("d:\\code\\").build();
 
         final DbParam p2 = DbParam.builder().url("jdbc:mysql://www.mapway.cn:3306/workday?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false")
@@ -23,6 +24,7 @@ public class MainTest {
                 .schema("workday")
                 .user("workday")
                 .password("workday.cn")
+                .dbContext("workday")
                 .path("d:\\code\\").build();
 
         final DbParam p3 = DbParam.builder().url("jdbc:oracle:thin:@10.16.26.21:1521:svdp")
@@ -30,11 +32,12 @@ public class MainTest {
                 .entityPackage("com.ziroom.code.test.entity")
                 .schema("HLASSET")
                 .user("HLASSET")
+                .dbContext("hlasset")
                 .password("oracle")
                 .path("d:\\code\\").build();
 
 
-        final DbParam dp = p1;
+        final DbParam dp = p3;
         IConfigure config = new IConfigure() {
 
             @Override
@@ -44,7 +47,7 @@ public class MainTest {
 
             @Override
             public List<String> includes() {
-                return Lang.array2list(Lang.array("hddp_design_approval","hddp_technology_test", "sys_dictionary", "BZ_ROOMCONFIG_DETAIL", "BZ_ATTACHMENT_NEW"));
+                return Lang.array2list(Lang.array("hddp_design_approval", "hddp_technology_test", "sys_dictionary", "BZ_ROOMCONFIG_DETAIL", "BZ_ATTACHMENT_NEW"));
             }
 
             @Override
@@ -161,6 +164,11 @@ public class MainTest {
             @Override
             public String mapperPath() {
                 return "d:\\code\\com\\ziroom\\hddp\\resource";
+            }
+
+            @Override
+            public String dbContext() {
+                return dp.getDbContext();
             }
 
         };

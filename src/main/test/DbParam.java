@@ -17,4 +17,5 @@ public class DbParam {
     private String entityPackage;
     private String schema;
     private String path;
+    private String dbContext;
 }

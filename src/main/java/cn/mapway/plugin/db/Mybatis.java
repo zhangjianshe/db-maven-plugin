@@ -168,6 +168,12 @@ public class Mybatis extends AbstractMojo {
     private String dbSourceName;
 
     /**
+     * DB Context
+     */
+    @Parameter(defaultValue = "", property = "dbContext", required = false)
+    private String dbContext;
+
+    /**
      * XML mapper的路径，缺省是资源路径
      */
     @Parameter(defaultValue = "${project.basedir}/src/main/resources/mybatis/mapper", property = "mapperPath", required = false)
@@ -334,6 +340,10 @@ public class Mybatis extends AbstractMojo {
                 return mapperPath;
             }
 
+            @Override
+            public String dbContext() {
+                return dbContext;
+            }
         };
 
         DB2Code app = new DB2Code(configure);

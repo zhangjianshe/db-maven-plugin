@@ -187,4 +187,12 @@ public interface IConfigure {
      * @return
      */
     String mapperPath();
+
+
+    /**
+     * MyBatis对多数据源的支持
+     *
+     * @return
+     */
+    String dbContext();
 }
