@@ -24,6 +24,7 @@ import org.nutz.json.Json;
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ClassUtils;
 import schemacrawler.inclusionrule.RegularExpressionInclusionRule;
 import schemacrawler.schema.*;
 import schemacrawler.schemacrawler.*;
@@ -57,7 +58,7 @@ public class DB2Code {
     private final static String xmlBody = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\">\n" +
             "<mapper ></mapper>";
-    private static Logger logger = Logger.getLogger(DB2Code.class.getName());
+    private static final Logger logger = Logger.getLogger(DB2Code.class.getName());
     /**
      * configuration
      */
@@ -317,7 +318,10 @@ public class DB2Code {
      * @param configure
      */
     private void exportTableMapperXML(Table table, IConfigure configure) throws TransformerException {
+        // maperPath/com/XX/XX/dbContext/YYYMapper.xml
         String path = configure.mapperPath();
+        String temp = ClassUtils.convertClassNameToResourcePath(configure.daoPackage());
+        path += File.separator + temp;
         String dbContext = configure.dbContext();
         if (Strings.isNotBlank(dbContext)) {
             dbContext = dbContext + File.separator;
@@ -506,7 +510,11 @@ public class DB2Code {
                             .addMember("type", "$T.$L", IdType.class, IdType.AUTO.name())
                             .build());
                 } else {
-                    fieldBuilder.addAnnotation(AnnotationSpec.builder(TableId.class).addMember("value", "$S", column.getName()).build());
+                    fieldBuilder.addAnnotation(AnnotationSpec.builder(TableId.class)
+                            .addMember("value", "$S", column.getName())
+                            .addMember("type", "$T.$L", IdType.class, IdType.INPUT
+                                    .name())
+                            .build());
                 }
             } else {
                 fieldBuilder.addAnnotation(AnnotationSpec.builder(TableField.class).addMember("value", "$S", column.getName()).build());

@@ -176,7 +176,7 @@ public class Mybatis extends AbstractMojo {
     /**
      * XML mapper的路径，缺省是资源路径
      */
-    @Parameter(defaultValue = "${project.basedir}/src/main/resources/mybatis/mapper", property = "mapperPath", required = false)
+    @Parameter(defaultValue = "${project.basedir}/src/main/resources", property = "mapperPath", required = false)
     private String mapperPath;
 
     private static List<String> parseLines(String data) {
@@ -334,6 +334,7 @@ public class Mybatis extends AbstractMojo {
             public Boolean withSwagger() {
                 return withSwagger;
             }
+
 
             @Override
             public String mapperPath() {
