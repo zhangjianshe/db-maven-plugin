@@ -321,7 +321,7 @@ public class DB2Code {
         // maperPath/com/XX/XX/dbContext/YYYMapper.xml
         String path = configure.mapperPath();
         String temp = ClassUtils.convertClassNameToResourcePath(configure.daoPackage());
-        path += File.separator + temp;
+        path += File.separator + temp+File.separator+"mapper";
         String dbContext = configure.dbContext();
         if (Strings.isNotBlank(dbContext)) {
             dbContext = dbContext + File.separator;
