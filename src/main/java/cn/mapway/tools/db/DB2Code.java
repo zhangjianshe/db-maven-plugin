@@ -373,35 +373,35 @@ public class DB2Code {
 
         if (doc != null) {
             //更新或者添加 映射节点
-            org.dom4j.Element resultMap = doc.getRootElement().element("resultMap");
-            Element allColumns = (Element) doc.selectSingleNode("mapper/sql[@id='all_columns']");
-            if (resultMap == null) {
-                resultMap = doc.getRootElement().addElement("resultMap");
-                ClassName mapperName = ClassName.get(configure.entityPackage(), getClassTypeName(table.getName()) + "Entity");
-                resultMap.addAttribute("id", mapperName.simpleName());
-                resultMap.addAttribute("type", mapperName.canonicalName());
-            }
-            if (allColumns == null) {
-                allColumns = doc.getRootElement().addElement("sql");
-                allColumns.addAttribute("id", "all_columns");
-            }
-            clearChildren(resultMap);
-
-            StringBuilder allcolumnsNames = new StringBuilder();
-
-            int index = 0;
-            //更新字段信息
-            for (Column c : table.getColumns()) {
-                org.dom4j.Element result = resultMap.addElement("result");
-                result.addAttribute("column", c.getName());
-                result.addAttribute("property", camelConvert.convert(c.getName()));
-                allcolumnsNames.append(((index++) == 0) ? "\n" : ",\n");
-                allcolumnsNames.append(c.getName());
-            }
-            allcolumnsNames.append("\n");
-            clearChildren(allColumns);
-            Text text = new DefaultText(allcolumnsNames.toString());
-            allColumns.add(text);
+//            org.dom4j.Element resultMap = doc.getRootElement().element("resultMap");
+//            Element allColumns = (Element) doc.selectSingleNode("mapper/sql[@id='all_columns']");
+//            if (resultMap == null) {
+//                resultMap = doc.getRootElement().addElement("resultMap");
+//                ClassName mapperName = ClassName.get(configure.entityPackage(), getClassTypeName(table.getName()) + "Entity");
+//                resultMap.addAttribute("id", mapperName.simpleName());
+//                resultMap.addAttribute("type", mapperName.canonicalName());
+//            }
+//            if (allColumns == null) {
+//                allColumns = doc.getRootElement().addElement("sql");
+//                allColumns.addAttribute("id", "all_columns");
+//            }
+//            clearChildren(resultMap);
+//
+//            StringBuilder allcolumnsNames = new StringBuilder();
+//
+//            int index = 0;
+//            //更新字段信息
+//            for (Column c : table.getColumns()) {
+//                org.dom4j.Element result = resultMap.addElement("result");
+//                result.addAttribute("column", c.getName());
+//                result.addAttribute("property", camelConvert.convert(c.getName()));
+//                allcolumnsNames.append(((index++) == 0) ? "\n" : ",\n");
+//                allcolumnsNames.append(c.getName());
+//            }
+//            allcolumnsNames.append("\n");
+//            clearChildren(allColumns);
+//            Text text = new DefaultText(allcolumnsNames.toString());
+//            allColumns.add(text);
 
             boolean flag = true;
             try {
