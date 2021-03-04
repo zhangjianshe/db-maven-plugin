@@ -538,7 +538,7 @@ public class DB2Code {
 
         if (columnDataType.getName().equals("NUMBER")) {
 
-            if (c.getDecimalDigits() == 0) {
+            if (c.getDecimalDigits() <= 0) {
                 if (c.getSize() < 10) {
                     return Integer.class;
                 }
