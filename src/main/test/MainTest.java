@@ -47,7 +47,7 @@ public class MainTest {
 
             @Override
             public List<String> includes() {
-                return Lang.array2list(Lang.array("hddp_design_approval", "hddp_technology_test", "sys_dictionary", "BZ_ROOMCONFIG_DETAIL", "BZ_ATTACHMENT_NEW"));
+                return Lang.array2list(Lang.array("hddp_design_approval", "hddp_technology_test", "sys_dictionary", "BZ_DESIGN_SCHEME_AUDIT"));
             }
 
             @Override
