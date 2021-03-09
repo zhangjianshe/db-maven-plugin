@@ -2,6 +2,7 @@ package cn.mapway.tools.db;
 
 import cn.mapway.tools.db.naming.CamelConvert;
 import cn.mapway.tools.db.naming.INameConvertor;
+import com.alibaba.druid.sql.SQLUtils;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -14,12 +15,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Text;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
-import org.dom4j.tree.DefaultText;
 import org.nutz.json.Json;
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
@@ -321,7 +322,7 @@ public class DB2Code {
         // maperPath/com/XX/XX/dbContext/YYYMapper.xml
         String path = configure.mapperPath();
         String temp = ClassUtils.convertClassNameToResourcePath(configure.daoPackage());
-        path += File.separator + temp+File.separator+"mapper";
+        path += File.separator + temp + File.separator + "mapper";
         String dbContext = configure.dbContext();
         if (Strings.isNotBlank(dbContext)) {
             dbContext = dbContext + File.separator;
@@ -358,6 +359,7 @@ public class DB2Code {
 
             if (root.getName().equals("mapper")) {
                 //找对文件了
+                doc = null;//强制不输出文件
             } else {
                 logger.warning(fileName + " 不是一个映射文件，请检查>" + root.getName());
                 return;
@@ -375,38 +377,10 @@ public class DB2Code {
             root.addAttribute("namespace", mapperName.canonicalName());
         }
 
+        //format sql
+        format(doc);
         if (doc != null) {
             //更新或者添加 映射节点
-//            org.dom4j.Element resultMap = doc.getRootElement().element("resultMap");
-//            Element allColumns = (Element) doc.selectSingleNode("mapper/sql[@id='all_columns']");
-//            if (resultMap == null) {
-//                resultMap = doc.getRootElement().addElement("resultMap");
-//                ClassName mapperName = ClassName.get(configure.entityPackage(), getClassTypeName(table.getName()) + "Entity");
-//                resultMap.addAttribute("id", mapperName.simpleName());
-//                resultMap.addAttribute("type", mapperName.canonicalName());
-//            }
-//            if (allColumns == null) {
-//                allColumns = doc.getRootElement().addElement("sql");
-//                allColumns.addAttribute("id", "all_columns");
-//            }
-//            clearChildren(resultMap);
-//
-//            StringBuilder allcolumnsNames = new StringBuilder();
-//
-//            int index = 0;
-//            //更新字段信息
-//            for (Column c : table.getColumns()) {
-//                org.dom4j.Element result = resultMap.addElement("result");
-//                result.addAttribute("column", c.getName());
-//                result.addAttribute("property", camelConvert.convert(c.getName()));
-//                allcolumnsNames.append(((index++) == 0) ? "\n" : ",\n");
-//                allcolumnsNames.append(c.getName());
-//            }
-//            allcolumnsNames.append("\n");
-//            clearChildren(allColumns);
-//            Text text = new DefaultText(allcolumnsNames.toString());
-//            allColumns.add(text);
-
             boolean flag = true;
             try {
                 OutputFormat format = new OutputFormat();
@@ -414,8 +388,10 @@ public class DB2Code {
                 format.setTrimText(false);
                 format.setNewlines(true);
                 format.setIndent(true);
+                format.setPadText(false);
                 format.setExpandEmptyElements(true);
-                format.setXHTML(false);
+                format.setXHTML(true);
+
 
                 logger.info("ready to produce " + pathName);
                 XMLWriter writer = new XMLWriter(Streams.fileOut(file), format);
@@ -425,6 +401,36 @@ public class DB2Code {
             } catch (Exception ex) {
                 flag = false;
                 logger.info("生成XML映射文件出错了" + ex.getLocalizedMessage());
+            }
+        }
+    }
+
+    private void format(Document doc) {
+        Element root = doc.getRootElement();
+        for (Element e : root.elements()) {
+            String data = (String) e.getData();
+            if (data != null) {
+                data = SQLUtils.format(data, "");
+                if (Strings.isNotBlank(data)) {
+                    data = "\r" + data + "\r";
+                }
+            }
+            List<Element> subs = e.elements();
+            e.clearContent();
+            e.setText(data);
+            for (Element sub : subs) {
+                e.add(sub);
+                if (sub instanceof Text) {
+                    Text t = (Text) sub;
+                    String text = t.getText();
+                    if (Strings.isNotBlank(text)) {
+                        logger.info(text);
+
+                        text = SQLUtils.format(text, "");
+                        e.setText(text);
+                        logger.info(e.getText());
+                    }
+                }
             }
         }
     }
