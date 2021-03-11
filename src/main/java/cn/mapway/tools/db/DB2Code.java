@@ -472,9 +472,9 @@ public class DB2Code {
 
         if (configure.lombok()) {
             typeBuilder.addAnnotation(AnnotationSpec.builder(Data.class).build());
-            typeBuilder.addAnnotation(AnnotationSpec.builder(Builder.class).build());
-            typeBuilder.addAnnotation(AnnotationSpec.builder(NoArgsConstructor.class).build());
             if (table.getColumns().size() <= 15) {
+                typeBuilder.addAnnotation(AnnotationSpec.builder(Builder.class).build());
+                typeBuilder.addAnnotation(AnnotationSpec.builder(NoArgsConstructor.class).build());
                 typeBuilder.addAnnotation(AnnotationSpec.builder(AllArgsConstructor.class).build());
             }
             typeBuilder.addAnnotation(AnnotationSpec.builder(Accessors.class).addMember("chain", "true").build());
