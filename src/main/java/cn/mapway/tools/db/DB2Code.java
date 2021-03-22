@@ -406,6 +406,10 @@ public class DB2Code {
     }
 
     private void format(Document doc) {
+        if (doc == null) {
+            logger.warning("xml is null");
+            return;
+        }
         Element root = doc.getRootElement();
         for (Element e : root.elements()) {
             String data = (String) e.getData();
