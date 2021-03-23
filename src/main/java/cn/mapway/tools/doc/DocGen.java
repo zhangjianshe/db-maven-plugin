@@ -19,16 +19,13 @@ import com.github.javaparser.ast.expr.MemberValuePair;
 import com.github.javaparser.javadoc.Javadoc;
 import com.github.javaparser.symbolsolver.JavaSymbolSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.CombinedTypeSolver;
-import com.github.javaparser.symbolsolver.resolution.typesolvers.JarTypeSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.JavaParserTypeSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeSolver;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.nutz.json.Json;
-import org.nutz.lang.Files;
-import org.nutz.lang.Lang;
-import org.nutz.lang.Strings;
+import org.nutz.lang.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,7 +34,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -51,7 +47,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class DocGen {
-    private DocConfiguration docConfiguration;
+    private final DocConfiguration docConfiguration;
 
     public DocGen(DocConfiguration docConfiguration) {
         this.docConfiguration = docConfiguration;
@@ -65,11 +61,11 @@ public class DocGen {
         CombinedTypeSolver typeSolver = new CombinedTypeSolver();
         typeSolver.add(new ReflectionTypeSolver());
         typeSolver.add(new JavaParserTypeSolver(new File(docConfiguration.getBasePath())));
-        try {
-            typeSolver.add(new JarTypeSolver(new File("D:\\repository\\com\\ziroom\\hddp\\design-client\\1.1.0\\design-client-1.1.0.jar")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            typeSolver.add(new JarTypeSolver(new File("D:\\repository\\com\\ziroom\\hddp\\design-client\\1.1.0\\design-client-1.1.0.jar")));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         JavaSymbolSolver javaSymbolSolver = new JavaSymbolSolver(typeSolver);
         StaticJavaParser.getConfiguration().setSymbolResolver(javaSymbolSolver);
 
@@ -106,8 +102,10 @@ public class DocGen {
         ArrayList list = new ArrayList<File>();
         for (File d : dirs) {
             File[] lsFile = Files.files(d, "java");
-            for (int i = 0; i < lsFile.length; i++) {
-                list.add(lsFile[i]);
+            if (lsFile != null) {
+                for (int i = 0; i < lsFile.length; i++) {
+                    list.add(lsFile[i]);
+                }
             }
         }
         return list;
@@ -179,6 +177,10 @@ public class DocGen {
 
         //处理Path
         Optional<AnnotationExpr> req = md.getAnnotationByClass(RequestMapping.class);
+        Optional<AnnotationExpr> get = md.getAnnotationByClass(GetMapping.class);
+        Optional<AnnotationExpr> post = md.getAnnotationByClass(PostMapping.class);
+        processUrl(unitSummary, md, entry, get);
+        processUrl(unitSummary, md, entry, post);
         req.ifPresent(requestMapping -> {
             List<String> paths = annoKeyListValue(requestMapping, "value", "path");
             List<String> methods = annoKeyListValue(requestMapping, "method");
@@ -212,8 +214,24 @@ public class DocGen {
         //处理JavaDoc
         Optional<Javadoc> javadoc = md.getJavadoc();
         if (javadoc.isPresent()) {
-            entry.addComment(javadoc.get().getDescription().toText());
+
+            parseEntryJavaDoc(entry, javadoc.get());
+
             entry.setAuthor(findTag(javadoc.get(), "author").orElse(unitSummary.getAuthor()));
+            Optional<String> groupPath = findTag(javadoc.get(), "group");
+            if (Strings.isBlank(entry.getGroup()) && groupPath.isPresent() && Strings.isNotBlank(groupPath.get())) {
+                entry.setGroup(concatPath(unitSummary.getGroupPath(), groupPath.get()));
+            }
+            Optional<String> tags = findTag(javadoc.get(), "tags");
+            if (groupPath.isPresent() && Strings.isNotBlank(groupPath.get())) {
+                String[] tasgList = Strings.split(tags.get(), false, false, ',', ';', '/', '\\');
+                if (tasgList != null && tasgList.length > 0) {
+                    for (int i = 0; i < tasgList.length; i++) {
+                        entry.addTag(tasgList[i]);
+                    }
+                }
+            }
+
         } else {
             entry.setAuthor(unitSummary.getAuthor());
         }
@@ -232,6 +250,36 @@ public class DocGen {
         //处理路径参数
 
         return entry;
+    }
+
+    private void parseEntryJavaDoc(final Entry entry, Javadoc javadoc) {
+        String desc = javadoc.getDescription().toText();
+        desc = Strings.trim(desc);
+        if (Strings.isNotBlank(desc)) {
+            Streams.eachLine(Lang.inr(desc), new Each<String>() {
+                @Override
+                public void invoke(int i, String s, int i1) throws ExitLoop, ContinueLoop, LoopException {
+                    if (i == 0) {
+                        entry.addComment(s);
+                    } else {
+                        entry.addNote(s);
+                    }
+                }
+            });
+        }
+    }
+
+    private void processUrl(UnitSummary unitSummary, MethodDeclaration md, Entry entry, Optional<AnnotationExpr> post) {
+        post.ifPresent(postMapping -> {
+            List<String> paths = annoKeyListValue(postMapping, "value", "path");
+            entry.getMethods().add("GET");
+            if (paths.size() > 0) {
+                entry.setPath(concatPath(unitSummary.getBasePath(), paths.get(0)));
+            } else {
+                log.warn("{} is not config path", md.toString());
+                entry.setIsValid(false);
+            }
+        });
     }
 
     private String concatPath(String path0, String path1) {
@@ -316,6 +364,10 @@ public class DocGen {
                 }
             } else {
                 unitSummary.setAuthor("");
+            }
+            Optional<String> groupPath = findTag(javadoc.get(), "group");
+            if (Strings.isBlank(unitSummary.getGroupPath()) && groupPath.isPresent() && Strings.isNotBlank(groupPath.get())) {
+                unitSummary.setGroupPath(groupPath.get());
             }
         });
 

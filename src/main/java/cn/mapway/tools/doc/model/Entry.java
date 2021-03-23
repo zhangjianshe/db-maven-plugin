@@ -52,6 +52,12 @@ public class Entry extends BaseData {
         return Strings.trim(this.group);
     }
 
+    public void setGroup(String group) {
+        if (Strings.isNotBlank(group)) {
+            this.group = group;
+        }
+    }
+
     public void setAuthor(String author) {
         if (Strings.isNotBlank(author)) {
             this.author = author;

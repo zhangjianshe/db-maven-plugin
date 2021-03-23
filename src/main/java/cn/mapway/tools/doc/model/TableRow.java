@@ -26,8 +26,8 @@ public class TableRow {
         cells.add(Lang.concat(e.methods.toArray()).toString());
         cells.add(e.getPath());
         cells.add(e.getAuthor());
-        cells.add(Lang.concat(e.getTags().toArray()).toString());
-        cells.add(Lang.concat(e.getNotes().toArray()).toString());
+        cells.add(Lang.concat(",", e.getTags().toArray()).toString());
+        cells.add(Lang.concat("\r\n", e.getNotes().toArray()).toString());
     }
 
 

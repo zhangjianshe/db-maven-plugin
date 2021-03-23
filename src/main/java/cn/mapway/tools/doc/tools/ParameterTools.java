@@ -2,6 +2,8 @@ package cn.mapway.tools.doc.tools;
 
 import cn.mapway.tools.doc.model.DataItem;
 import cn.mapway.tools.doc.model.Entry;
+import cn.mapway.tools.doc.types.ApiType;
+import cn.mapway.tools.doc.types.ApiTypes;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
@@ -37,7 +39,7 @@ public class ParameterTools {
      */
     public static void processOutputParameter(Entry entry, MethodDeclaration md) {
         Type returnType = md.getType();
-        DataItem dataItem = DataItem.parseType(returnType);
-        entry.setOut(dataItem);
+        ApiType apiType= ApiTypes.parse(returnType);
+
     }
 }
