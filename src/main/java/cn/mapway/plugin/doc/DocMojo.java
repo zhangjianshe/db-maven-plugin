@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author zhangjianshe@gmail.com
  */
-@Mojo(name = "mybatis", defaultPhase = LifecyclePhase.POST_SITE)
+@Mojo(name = "doc", defaultPhase = LifecyclePhase.POST_SITE)
 @Slf4j
 public class DocMojo {
     /**
