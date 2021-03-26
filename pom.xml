@@ -153,36 +153,16 @@
                     <url>http://maven.ziroom.com:8081/nexus/content/repositories/sms-d/</url>
                 </repository>
             </distributionManagement>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>package-sources</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>package-javadoc</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
+        </profile>
+        <profile>
+            <id>sms-t</id>
+
+            <distributionManagement>
+                <repository>
+                    <id>ziroom-central</id>
+                    <url>http://maven.ziroom.com:8081/nexus/content/repositories/sms-t/</url>
+                </repository>
+            </distributionManagement>
         </profile>
         <profile>
             <id>release</id>
