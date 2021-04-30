@@ -219,13 +219,16 @@ public class DB2Code {
 
             Boolean exist = isFileExist(configure.daoPath(), configure.daoPackage() + ".mapper" + dbContext, fileName + ".java");
             if (exist) {
-                logger.warning("存在Mapper文件" + fileName);
+                logger.warning(String.format("存在Mapper文件%s", fileName));
                 return;
             }
         }
 
         try {
-            JavaFile javaFile = JavaFile.builder(configure.daoPackage() + ".mapper" + dbContext, typeBuilder.build()).build();
+            JavaFile javaFile = JavaFile.builder(configure.daoPackage() + ".mapper" + dbContext, typeBuilder.build())
+                    .skipJavaLangImports(true)
+                    .build();
+
             javaFile.writeTo(new File(configure.daoPath()));
         } catch (IOException e) {
             logger.warning("输出Mapper文件出错了,(" + fileName + ")" + e.getMessage());
@@ -305,7 +308,9 @@ public class DB2Code {
         }
 
         try {
-            JavaFile javaFile = JavaFile.builder(configure.daoPackage() + ".service", typeBuilder.build()).build();
+            JavaFile javaFile = JavaFile.builder(configure.daoPackage() + ".service", typeBuilder.build())
+                    .skipJavaLangImports(true)
+                    .build();
             javaFile.writeTo(new File(configure.daoPath()));
         } catch (IOException e) {
             e.printStackTrace();

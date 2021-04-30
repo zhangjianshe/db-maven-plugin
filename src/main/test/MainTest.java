@@ -9,7 +9,7 @@ public class MainTest {
     public static void main(String[] args) {
 
 
-        final DbParam p1 = DbParam.builder().url("jdbc:mysql://10.30.7.138:3306/hddp_common?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false")
+        final DbParam p1 = DbParam.builder().url("jdbc:mysql://10.30.7.138:3306/jz_design?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false")
                 .daoPackage("com.ziroom.code.test.dao")
                 .entityPackage("com.ziroom.code.test.entity")
                 .schema("jz_design")
@@ -37,7 +37,7 @@ public class MainTest {
                 .path("d:\\code\\").build();
 
 
-        final DbParam dp = p3;
+        final DbParam dp = p1;
         IConfigure config = new IConfigure() {
 
             @Override
@@ -47,7 +47,7 @@ public class MainTest {
 
             @Override
             public List<String> includes() {
-                return Lang.array2list(Lang.array("biz_log","bz_dictionary","hddp_design_approval", "hddp_technology_test", "sys_dictionary", "BZ_DESIGN_SCHEME_AUDIT"));
+                return Lang.array2list(Lang.array("biz_log","bz_dictionary","hddp_design_resource","hddp_design_approval", "hddp_technology_test", "sys_dictionary", "BZ_DESIGN_SCHEME_AUDIT"));
             }
 
             @Override
