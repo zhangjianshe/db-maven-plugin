@@ -99,6 +99,12 @@ public class Nuts extends AbstractMojo {
     @Parameter(defaultValue = "false", property = "lombok", required = false)
     private Boolean lombok;
 
+    /**
+     * 解析行
+     *
+     * @param data 数据
+     * @return {@link List<String>}
+     */
     private static List<String> parseLines(String data) {
         if (Strings.isBlank(data)) {
             return new ArrayList<String>();
@@ -115,6 +121,12 @@ public class Nuts extends AbstractMojo {
         return list;
     }
 
+    /**
+     * 执行
+     *
+     * @throws MojoExecutionException 魔力执行异常
+     * @throws MojoFailureException   魔力衰竭例外
+     */
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         IConfigure configure = new IConfigure() {

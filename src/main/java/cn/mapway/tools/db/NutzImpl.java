@@ -151,14 +151,14 @@ public class NutzImpl {
                MethodSpec.Builder builder = MethodSpec.methodBuilder("get"+getClassTypeName(column.getName()));
                builder.returns(getDataType(column, column.getColumnDataType()));
                builder.addModifiers(Modifier.PUBLIC);
-               builder.addStatement("\r return $L;",camelConvert.convert(column.getName()));
+               builder.addStatement("return this.$L",camelConvert.convert(column.getName()));
 
                typeBuilder.addMethod(builder.build());
                 builder = MethodSpec.methodBuilder("set"+getClassTypeName(column.getName()));
                 builder.returns(TypeName.VOID);
                 builder.addModifiers(Modifier.PUBLIC);
                 builder.addParameter(getDataType(column, column.getColumnDataType()),camelConvert.convert(column.getName()));
-                builder.addStatement("\r this.$L=$L;",camelConvert.convert(column.getName()),camelConvert.convert(column.getName()));
+                builder.addStatement("this.$L=$L;",camelConvert.convert(column.getName()),camelConvert.convert(column.getName()));
                 typeBuilder.addMethod(builder.build());
             }
         }

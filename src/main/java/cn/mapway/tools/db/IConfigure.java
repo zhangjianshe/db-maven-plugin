@@ -175,24 +175,27 @@ public interface IConfigure {
     Boolean overrideDao();
 
     /**
+     * db源名称
      * MyBatis DAO 选择的数据源名称
      *
-     * @return
+     * @return {@link String}
      */
     String dbSourceName();
 
     /**
+     * 映射器路径
      * Mapper XML 路径 如果没有填写 则不会输出 mapper 的XML文件
      *
-     * @return
+     * @return {@link String}
      */
     String mapperPath();
 
 
     /**
+     * db上下文
      * MyBatis对多数据源的支持
      *
-     * @return
+     * @return {@link String}
      */
     String dbContext();
 }

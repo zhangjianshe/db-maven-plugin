@@ -18,10 +18,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ParameterTools {
     /**
+     * 过程输入参数
      * 处理接口的输入参数
      *
-     * @param entry
-     * @param md
+     * @param entry 条目
+     * @param md    医学博士
      */
     public static void processInputParameter(Entry entry, MethodDeclaration md) {
         NodeList<Parameter> parameters = md.getParameters();
@@ -32,10 +33,11 @@ public class ParameterTools {
     }
 
     /**
+     * 过程输出参数
      * 处理接口的输入参数
      *
-     * @param entry
-     * @param md
+     * @param entry 条目
+     * @param md    医学博士
      */
     public static void processOutputParameter(Entry entry, MethodDeclaration md) {
         Type returnType = md.getType();

@@ -36,9 +36,10 @@ public class DocMojo {
     private String libPath;
 
     /**
+     * 执行
      * Execute mojo
      *
-     * @throws MojoExecutionException
+     * @throws MojoExecutionException 魔力执行异常
      */
     public void execute()
             throws MojoExecutionException {

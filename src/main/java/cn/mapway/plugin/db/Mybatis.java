@@ -120,19 +120,19 @@ public class Mybatis extends AbstractMojo {
     private String author;
 
     /**
-     * 日期转换格式
+     * 日期格式
      */
     @Parameter(defaultValue = "", property = "dateFormat", required = false)
     private String dateFormat;
 
     /**
-     * 日期转换格式
+     * lombok
      */
     @Parameter(defaultValue = "false", property = "lombok", required = false)
     private Boolean lombok;
 
     /**
-     * 包含的表明，用逗号或者分号分隔
+     * 包括
      */
     @Parameter(defaultValue = "", property = "includes", required = false)
     private String includes;
@@ -179,6 +179,12 @@ public class Mybatis extends AbstractMojo {
     @Parameter(defaultValue = "${project.basedir}/src/main/resources", property = "mapperPath", required = false)
     private String mapperPath;
 
+    /**
+     * 解析行
+     *
+     * @param data 数据
+     * @return {@link List<String>}
+     */
     private static List<String> parseLines(String data) {
         if (Strings.isBlank(data)) {
             return new ArrayList<String>();
@@ -195,6 +201,11 @@ public class Mybatis extends AbstractMojo {
         return list;
     }
 
+    /**
+     * 执行
+     *
+     * @throws MojoExecutionException 魔力执行异常
+     */
     public void execute()
             throws MojoExecutionException {
 

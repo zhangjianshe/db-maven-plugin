@@ -13,6 +13,12 @@ import org.nutz.lang.Strings;
 public class DocTools {
 
 
+    /**
+     * 正常路径
+     *
+     * @param gp 全科医生
+     * @return {@link String}
+     */
     public static String normalPath(String gp) {
         if (Strings.isBlank(gp)) {
 

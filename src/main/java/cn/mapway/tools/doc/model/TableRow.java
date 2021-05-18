@@ -17,6 +17,11 @@ public class TableRow {
     List<String> cells;
 
 
+    /**
+     * 表行
+     *
+     * @param e e
+     */
     TableRow(Entry e) {
         entry = e;
 
@@ -32,9 +37,11 @@ public class TableRow {
 
 
     /**
-     * @param catCells
-     * @param i
-     * @return
+     * 与html
+     *
+     * @param catCells 猫细胞
+     * @param i        我
+     * @return {@link String}
      */
     public String toHtml(CatCell[][] catCells, int i) {
 

@@ -29,6 +29,9 @@ public class Entry extends BaseData {
     DataItem out;
 
 
+    /**
+     * 条目
+     */
     public Entry() {
         isValid = true;
         methods = new ArrayList<>();
@@ -38,32 +41,62 @@ public class Entry extends BaseData {
         ins = new ArrayList<>();
     }
 
+    /**
+     * 设置父
+     *
+     * @param g g
+     */
     public void setParent(Group g) {
         this.parent = g;
     }
 
+    /**
+     * 添加标签
+     *
+     * @param tag 标签
+     */
     public void addTag(String tag) {
         if (Strings.isNotBlank(tag)) {
             tags.add(tag.trim());
         }
     }
 
+    /**
+     * 获得集团
+     *
+     * @return {@link String}
+     */
     public String getGroup() {
         return Strings.trim(this.group);
     }
 
+    /**
+     * 组群
+     *
+     * @param group 集团
+     */
     public void setGroup(String group) {
         if (Strings.isNotBlank(group)) {
             this.group = group;
         }
     }
 
+    /**
+     * 集的作者
+     *
+     * @param author 作者
+     */
     public void setAuthor(String author) {
         if (Strings.isNotBlank(author)) {
             this.author = author;
         }
     }
 
+    /**
+     * 字符串
+     *
+     * @return {@link String}
+     */
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(group).append("\t")
@@ -75,10 +108,11 @@ public class Entry extends BaseData {
         return sb.toString();
     }
 
+
     /**
-     * 返回所有的父节点,按照顺序
+     * 所有的父母
      *
-     * @return
+     * @return data
      */
     public List<Group> allParents() {
         List<Group> groups = new ArrayList<>();

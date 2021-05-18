@@ -42,6 +42,12 @@ public class DataItem {
 
     }
 
+    /**
+     * 解析类型
+     *
+     * @param returnType 返回类型
+     * @return {@link DataItem}
+     */
     public static DataItem parseType(Type returnType) {
         if (returnType.isPrimitiveType()) {
             return parseSimpleType(returnType);
@@ -53,6 +59,12 @@ public class DataItem {
 
     }
 
+    /**
+     * 解析对象类型
+     *
+     * @param returnType 返回类型
+     * @return {@link ObjectData}
+     */
     private static ObjectData parseObjectType(Type returnType) {
         ObjectData obj = new ObjectData();
         ResolvedType resolve = returnType.resolve();
@@ -70,6 +82,13 @@ public class DataItem {
         return obj;
     }
 
+    /**
+     * 提取字段
+     *
+     * @param f                 f
+     * @param obj               obj
+     * @param typeParametersMap 类型参数映射
+     */
     private static void extractField(ResolvedFieldDeclaration f, ObjectData obj, List<Pair<ResolvedTypeParameterDeclaration, ResolvedType>> typeParametersMap) {
         String name = f.getName();
 
@@ -90,6 +109,13 @@ public class DataItem {
         }
     }
 
+    /**
+     * 从解析器类型
+     *
+     * @param type              类型
+     * @param typeParametersMap 类型参数映射
+     * @return {@link DataType}
+     */
     private static DataType fromParserType(Type type, List<Pair<ResolvedTypeParameterDeclaration, ResolvedType>> typeParametersMap) {
         if (type.isClassOrInterfaceType()) {
             ClassOrInterfaceType classOrInterfaceType = (ClassOrInterfaceType) type;
@@ -110,11 +136,24 @@ public class DataItem {
         return DataType.StringType;
     }
 
+    /**
+     * 从解决类型
+     *
+     * @param type              类型
+     * @param typeParametersMap 类型参数映射
+     * @return {@link DataType}
+     */
     private static DataType fromResolveType(ResolvedType type,List<Pair<ResolvedTypeParameterDeclaration, ResolvedType>> typeParametersMap) {
         log.info(type.describe());
         return DataType.StringType;
     }
 
+    /**
+     * 解析简单类型
+     *
+     * @param returnType 返回类型
+     * @return {@link SimpleData}
+     */
     private static SimpleData parseSimpleType(Type returnType) {
         return null;
     }

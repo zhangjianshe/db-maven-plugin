@@ -41,6 +41,7 @@ import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 /**
+ * 医生创
  * DocGen
  *
  * @author zhangjianshe@gmail.com
@@ -49,14 +50,28 @@ import java.util.stream.Collectors;
 public class DocGen {
     private final DocConfiguration docConfiguration;
 
+    /**
+     * 医生创
+     *
+     * @param docConfiguration 医生配置
+     */
     public DocGen(DocConfiguration docConfiguration) {
         this.docConfiguration = docConfiguration;
     }
 
+    /**
+     * 包的路径
+     *
+     * @param pack 包
+     * @return {@link String}
+     */
     private String packageToPath(String pack) {
         return pack.replaceAll("\\.", Matcher.quoteReplacement(File.separator));
     }
 
+    /**
+     * 运行
+     */
     public void run() {
         CombinedTypeSolver typeSolver = new CombinedTypeSolver();
         typeSolver.add(new ReflectionTypeSolver());
@@ -97,6 +112,12 @@ public class DocGen {
     }
 
 
+    /**
+     * 列出所有文件
+     *
+     * @param filePath 文件路径
+     * @return {@link List<File>}
+     */
     private List<File> listAllFiles(String filePath) {
         File[] dirs = Files.scanDirs(new File(filePath));
         ArrayList list = new ArrayList<File>();
@@ -111,6 +132,12 @@ public class DocGen {
         return list;
     }
 
+    /**
+     * 解析文件
+     *
+     * @param file 文件
+     * @return {@link List<Entry>}
+     */
     private List<Entry> parseFile(File file) {
         try {
             CompilationUnit unit = StaticJavaParser.parse(file);
@@ -137,6 +164,12 @@ public class DocGen {
         return new ArrayList<>();
     }
 
+    /**
+     * 其他过程控制器
+     *
+     * @param typeDeclaration 类型声明
+     * @return {@link List<Entry>}
+     */
     private List<Entry> processRestController(TypeDeclaration<?> typeDeclaration) {
         log.info("处理控制器 {}", typeDeclaration.getName());
         Optional<AnnotationExpr> restController = typeDeclaration.getAnnotationByClass(RestController.class);
@@ -144,6 +177,12 @@ public class DocGen {
         return processApi(typeDeclaration, requestMapping);
     }
 
+    /**
+     * 过程控制器
+     *
+     * @param typeDeclaration 类型声明
+     * @return {@link List<Entry>}
+     */
     private List<Entry> processController(TypeDeclaration<?> typeDeclaration) {
         log.info("处理控制器 {}", typeDeclaration.getName());
         Optional<AnnotationExpr> controller = typeDeclaration.getAnnotationByClass(Controller.class);
@@ -151,6 +190,13 @@ public class DocGen {
         return processApi(typeDeclaration, requestMapping);
     }
 
+    /**
+     * 过程的api
+     *
+     * @param typeDeclaration 类型声明
+     * @param requestMapping  请求映射
+     * @return {@link List<Entry>}
+     */
     private List<Entry> processApi(TypeDeclaration<?> typeDeclaration, Optional<AnnotationExpr> requestMapping) {
         final UnitSummary unitSummary = parseSummary(typeDeclaration, requestMapping);
         log.info(Json.toJson(unitSummary));
@@ -161,6 +207,12 @@ public class DocGen {
         return entries;
     }
 
+    /**
+     * 是api
+     *
+     * @param md 医学博士
+     * @return {@link Boolean}
+     */
     private Boolean isApi(MethodDeclaration md) {
         if (!md.isPublic()) {
             return false;
@@ -172,6 +224,13 @@ public class DocGen {
         return req.isPresent() || get.isPresent() || post.isPresent();
     }
 
+    /**
+     * 解析条目
+     *
+     * @param unitSummary 单元总结
+     * @param md          医学博士
+     * @return {@link Entry}
+     */
     private Entry parseEntry(final UnitSummary unitSummary, MethodDeclaration md) {
         final Entry entry = new Entry();
 
@@ -252,6 +311,12 @@ public class DocGen {
         return entry;
     }
 
+    /**
+     * 解析输入java文档
+     *
+     * @param entry   条目
+     * @param javadoc javadoc
+     */
     private void parseEntryJavaDoc(final Entry entry, Javadoc javadoc) {
         String desc = javadoc.getDescription().toText();
         desc = Strings.trim(desc);
@@ -269,6 +334,14 @@ public class DocGen {
         }
     }
 
+    /**
+     * 过程的url
+     *
+     * @param unitSummary 单元总结
+     * @param md          医学博士
+     * @param entry       条目
+     * @param post        帖子
+     */
     private void processUrl(UnitSummary unitSummary, MethodDeclaration md, Entry entry, Optional<AnnotationExpr> post) {
         post.ifPresent(postMapping -> {
             List<String> paths = annoKeyListValue(postMapping, "value", "path");
@@ -282,6 +355,13 @@ public class DocGen {
         });
     }
 
+    /**
+     * concat路径
+     *
+     * @param path0 path0
+     * @param path1 path1
+     * @return {@link String}
+     */
     private String concatPath(String path0, String path1) {
         if (Strings.isBlank(path0)) {
             return path1;
@@ -297,6 +377,13 @@ public class DocGen {
         return temp + temp2;
     }
 
+    /**
+     * 庵野键列表值
+     *
+     * @param anno 伊斯兰教纪元
+     * @param keys 键
+     * @return {@link List<String>}
+     */
     private List<String> annoKeyListValue(AnnotationExpr anno, String... keys) {
         if (anno == null || Lang.isEmpty(keys)) {
             return new ArrayList<>();
@@ -321,6 +408,12 @@ public class DocGen {
         return values;
     }
 
+    /**
+     * 提取列表
+     *
+     * @param t      t
+     * @param values 值
+     */
     private void extractList(ArrayInitializerExpr t, List<String> values) {
         NodeList<Expression> values1 = t.getValues();
         for (int i = 0; i < values1.size(); i++) {
@@ -330,6 +423,13 @@ public class DocGen {
     }
 
 
+    /**
+     * 分析总结
+     *
+     * @param typeDeclaration 类型声明
+     * @param requestMapping  请求映射
+     * @return {@link UnitSummary}
+     */
     private UnitSummary parseSummary(TypeDeclaration<?> typeDeclaration, Optional<AnnotationExpr> requestMapping) {
         final UnitSummary unitSummary = new UnitSummary();
 

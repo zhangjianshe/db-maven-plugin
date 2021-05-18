@@ -32,10 +32,18 @@ import java.util.List;
 public class ObjectData extends DataItem {
     List<DataItem> fields;
 
+    /**
+     * 对象数据
+     */
     public ObjectData() {
         fields = new ArrayList<>();
     }
 
+    /**
+     * 添加字段
+     *
+     * @param dt dt
+     */
     public void addField(DataItem dt) {
         fields.add(dt);
     }

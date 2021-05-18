@@ -11,6 +11,9 @@ import java.util.List;
 public class CatRow {
     List<CatCell> cells;
 
+    /**
+     * 猫行
+     */
     public CatRow() {
         cells = new ArrayList<>();
     }

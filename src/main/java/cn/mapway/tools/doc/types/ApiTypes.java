@@ -32,19 +32,32 @@ import static java.util.stream.Collectors.joining;
 public class ApiTypes {
     private static final Map<String, ApiType> types = new HashMap<>();
 
+    /**
+     * 找到
+     *
+     * @param typeName 类型名称
+     * @return {@link ApiType}
+     */
     public static ApiType find(String typeName) {
         return types.get(typeName);
     }
 
+    /**
+     * 把
+     *
+     * @param typeName 类型名称
+     * @param type     类型
+     */
     public static void put(String typeName, ApiType type) {
         types.put(typeName, type);
     }
 
     /**
+     * 解析
      * 解析 Type
      *
-     * @param returnType
-     * @return
+     * @param returnType 返回类型
+     * @return {@link ApiType}
      */
     public static ApiType parse(Type returnType) {
         if (returnType.isClassOrInterfaceType()) {
@@ -70,11 +83,12 @@ public class ApiTypes {
     }
 
     /**
+     * 解析
      * 解析 Type
      *
-     * @param returnType
-     * @param typeParametersMap
-     * @return
+     * @param resolveType       解决类型
+     * @param typeParametersMap 类型参数映射
+     * @return {@link ApiType}
      */
     public static ApiType parse(ResolvedReferenceType resolveType, List<Pair<ResolvedTypeParameterDeclaration, ResolvedType>> typeParametersMap) {
 
@@ -115,6 +129,13 @@ public class ApiTypes {
         return apiType;
     }
 
+    /**
+     * 发现如上所述类型的操作
+     *
+     * @param typeParametersMap 类型参数映射
+     * @param a                 一个
+     * @return {@link ResolvedType}
+     */
     private static ResolvedType findTypeVariable2(List<Pair<ResolvedTypeParameterDeclaration, ResolvedType>> typeParametersMap, ResolvedTypeParameterDeclaration a) {
         String name = a.getQualifiedName();
         for (Pair<ResolvedTypeParameterDeclaration, ResolvedType> p : typeParametersMap) {
@@ -126,6 +147,11 @@ public class ApiTypes {
         return null;
     }
 
+    /**
+     * 从类型
+     *
+     * @param type 类型
+     */
     private static void fromType(Type type) {
         //一定会得到
         ApiType apiType = types.get(type.asString());
@@ -151,13 +177,14 @@ public class ApiTypes {
     }
 
     /**
+     * 解析器解析java字段declarition
      * 字段解析
      * 参数变量  T
      * 参数
      *
-     * @param jpfd
-     * @param typeParametersMap
-     * @return
+     * @param jpfd              jpfd
+     * @param typeParametersMap 类型参数映射
+     * @return {@link ApiType}
      */
     private static ApiType parseJavaParserFieldDeclarition(JavaParserFieldDeclaration jpfd, List<Pair<ResolvedTypeParameterDeclaration, ResolvedType>> typeParametersMap) {
 
@@ -181,11 +208,12 @@ public class ApiTypes {
     }
 
     /**
+     * 分析解决
      * 解析
      *
-     * @param resolvedTypeDeclaration
-     * @param typeParametersMap
-     * @return
+     * @param resolvedTypeDeclaration 解决类型声明
+     * @param typeParametersMap       类型参数映射
+     * @return {@link ApiType}
      */
     private static ApiType parseResolved(ResolvedTypeDeclaration resolvedTypeDeclaration, List<Pair<ResolvedTypeParameterDeclaration, ResolvedType>> typeParametersMap) {
 
@@ -205,6 +233,9 @@ public class ApiTypes {
         return apiType;
     }
 
+    /**
+     * 报告
+     */
     public static void report() {
         types.forEach((type, info) -> {
             log.info("=======  {}  ======", type);
@@ -214,6 +245,13 @@ public class ApiTypes {
         });
     }
 
+    /**
+     * 找到类型变量
+     *
+     * @param typeParametersMap    类型参数映射
+     * @param resolvedTypeVariable 解决类型变量
+     * @return {@link ResolvedType}
+     */
     private static ResolvedType findTypeVariable(List<Pair<ResolvedTypeParameterDeclaration, ResolvedType>> typeParametersMap, ResolvedTypeVariable resolvedTypeVariable) {
         String t = resolvedTypeVariable.qualifiedName();
 
@@ -226,6 +264,12 @@ public class ApiTypes {
         return null;
     }
 
+    /**
+     * 从列表
+     *
+     * @param t t
+     * @return {@link Map<ResolvedTypeParameterDeclaration, ResolvedType>}
+     */
     private static Map<ResolvedTypeParameterDeclaration, ResolvedType> fromList(List<Pair<ResolvedTypeParameterDeclaration, ResolvedType>> t) {
         Map<ResolvedTypeParameterDeclaration, ResolvedType> mapper = new HashMap<>();
 

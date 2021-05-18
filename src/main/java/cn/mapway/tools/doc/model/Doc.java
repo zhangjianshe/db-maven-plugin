@@ -23,10 +23,11 @@ public class Doc extends BaseData {
     }
 
     /**
+     * 解析条目
      * 处理Group信息
      *
-     * @param entries
-     * @return
+     * @param entries 条目
+     * @return {@link Doc}
      */
     public static final Doc parseEntries(List<Entry> entries) {
         Doc doc = new Doc();
@@ -40,6 +41,12 @@ public class Doc extends BaseData {
     }
 
 
+    /**
+     * 找到组织
+     *
+     * @param groupPath 组的路径
+     * @return {@link Group}
+     */
     public Group findGroup(String groupPath) {
         if (Strings.isBlank(groupPath)) {
             return root;
@@ -56,6 +63,13 @@ public class Doc extends BaseData {
         return g;
     }
 
+    /**
+     * 确定组
+     *
+     * @param parent 父
+     * @param name   的名字
+     * @return {@link Group}
+     */
     private Group sureGroup(Group parent, String name) {
         for (int i = 0; i < parent.subGroupCount(); i++) {
             Group g = parent.subGroup(i);
@@ -69,10 +83,18 @@ public class Doc extends BaseData {
         return g;
     }
 
+    /**
+     * 排序
+     */
     public void sort() {
         innerSort(root);
     }
 
+    /**
+     * 内部排序
+     *
+     * @param root 根
+     */
     private void innerSort(Group root) {
 
         Collections.sort(root.getEntries(), Comparator.comparing(BaseData::toComment));
@@ -83,16 +105,16 @@ public class Doc extends BaseData {
     }
 
     /**
+     * 与html
      * 输出HTML TABLE
      * Group  Group  POST  COMMENT URL AUTHOR NOTES
-     * <p>
      * root
-     * 1->
-     * 2->
+     * 1
+     * 2
      * 3-4-5
-     * ->
      *
-     * @return
+     *
+     * @return {@link String}
      */
     public String toHtml() {
 
@@ -175,6 +197,12 @@ public class Doc extends BaseData {
         return sb.toString();
     }
 
+    /**
+     * 添加组条目
+     *
+     * @param group 集团
+     * @param table 表格
+     */
     private void addGroupEntry(Group group, List<TableRow> table) {
         for (Entry e : group.getEntries()) {
             table.add(new TableRow(e));
