@@ -109,7 +109,7 @@ public interface IConfigure {
      *
      * @return use gwt
      */
-    String getUseGwt();
+    Boolean getUseGwt();
 
     /**
      * 是否关联注解

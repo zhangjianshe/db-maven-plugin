@@ -104,8 +104,8 @@ public class Mybatis extends AbstractMojo {
     /**
      * 是否关联GWT
      */
-    @Parameter(defaultValue = "0", property = "useGwt", required = false)
-    private String useGwt;
+    @Parameter(defaultValue = "false", property = "useGwt", required = false)
+    private Boolean useGwt;
 
     /**
      * 是否关联文档
@@ -292,7 +292,7 @@ public class Mybatis extends AbstractMojo {
             }
 
             @Override
-            public String getUseGwt() {
+            public Boolean getUseGwt() {
                 return useGwt;
             }
 

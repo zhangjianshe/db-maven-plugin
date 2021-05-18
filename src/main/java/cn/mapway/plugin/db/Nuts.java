@@ -100,6 +100,12 @@ public class Nuts extends AbstractMojo {
     private Boolean lombok;
 
     /**
+     * 是否使用引入GWT
+     */
+    @Parameter(defaultValue = "false", property = "useGwt", required = false)
+    private Boolean useGwt;
+
+    /**
      * 解析行
      *
      * @param data 数据
@@ -212,8 +218,8 @@ public class Nuts extends AbstractMojo {
             }
 
             @Override
-            public String getUseGwt() {
-                return "useGwt";
+            public Boolean getUseGwt() {
+                return useGwt;
             }
 
             @Override
@@ -238,7 +244,7 @@ public class Nuts extends AbstractMojo {
 
             @Override
             public String dateFormat() {
-                return "dateFormat";
+                return "";
             }
 
             @Override

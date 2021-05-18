@@ -143,22 +143,20 @@ public class NutzImpl {
                 typeBuilder.addAnnotation(AnnotationSpec.builder(AllArgsConstructor.class).build());
             }
             typeBuilder.addAnnotation(AnnotationSpec.builder(Accessors.class).addMember("chain", "true").build());
-        }
-        else
-        {
+        } else {
             //需要添加 get set方法
             for (Column column : table.getColumns()) {
-               MethodSpec.Builder builder = MethodSpec.methodBuilder("get"+getClassTypeName(column.getName()));
-               builder.returns(getDataType(column, column.getColumnDataType()));
-               builder.addModifiers(Modifier.PUBLIC);
-               builder.addStatement("return this.$L",camelConvert.convert(column.getName()));
+                MethodSpec.Builder builder = MethodSpec.methodBuilder("get" + getClassTypeName(column.getName()));
+                builder.returns(getDataType(column, column.getColumnDataType()));
+                builder.addModifiers(Modifier.PUBLIC);
+                builder.addStatement("return this.$L", camelConvert.convert(column.getName()));
 
-               typeBuilder.addMethod(builder.build());
-                builder = MethodSpec.methodBuilder("set"+getClassTypeName(column.getName()));
+                typeBuilder.addMethod(builder.build());
+                builder = MethodSpec.methodBuilder("set" + getClassTypeName(column.getName()));
                 builder.returns(TypeName.VOID);
                 builder.addModifiers(Modifier.PUBLIC);
-                builder.addParameter(getDataType(column, column.getColumnDataType()),camelConvert.convert(column.getName()));
-                builder.addStatement("this.$L=$L;",camelConvert.convert(column.getName()),camelConvert.convert(column.getName()));
+                builder.addParameter(getDataType(column, column.getColumnDataType()), camelConvert.convert(column.getName()));
+                builder.addStatement("this.$L=$L;", camelConvert.convert(column.getName()), camelConvert.convert(column.getName()));
                 typeBuilder.addMethod(builder.build());
             }
         }
@@ -178,7 +176,7 @@ public class NutzImpl {
             //有联合主键
             AnnotationSpec.Builder unniColumns = AnnotationSpec.builder(PK.class);
             StringBuilder sb = new StringBuilder();
-            sb.append("{[}");
+            sb.append("{");
 
             for (TableConstraintColumn c : primaryKey.getColumns()) {
                 if (sb.length() > 1) {
@@ -254,7 +252,7 @@ public class NutzImpl {
                                     .build());
                         } else {
                             fieldBuilder.addAnnotation(AnnotationSpec.builder(Id.class)
-                                    .addMember("auto", "$L", "=false")
+                                    .addMember("auto", "$L", "false")
                                     .build());
                         }
                     } else {
@@ -274,6 +272,10 @@ public class NutzImpl {
 
 
         typeBuilder.addSuperinterface(Serializable.class);
+        if (configure.getUseGwt()) {
+            ClassName cn = ClassName.get("com.google.gwt.user.client.rpc", "IsSerializable");
+            typeBuilder.addSuperinterface(cn);
+        }
 
         JavaFile javaFile = JavaFile.builder(configure.entityPackage(), typeBuilder.build()).build();
 
@@ -292,9 +294,9 @@ public class NutzImpl {
      * @return
      */
     private boolean isNumber(Column column) {
-        log.info("column "+column.getName()+" is "+column.getColumnDataType().getName());
-        String[] numbers= Lang.array("INT","BIGINT","NUMBER");
-        return Lang.contains(numbers,column.getColumnDataType().getName());
+        log.info("column " + column.getName() + " is " + column.getColumnDataType().getName());
+        String[] numbers = Lang.array("INT", "BIGINT", "NUMBER");
+        return Lang.contains(numbers, column.getColumnDataType().getName());
     }
 
     private boolean inList(List<String> includes, String table) {

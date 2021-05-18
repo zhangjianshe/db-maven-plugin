@@ -89,9 +89,10 @@ public class ConfigImpl implements IConfigure {
     }
 
 
+    Boolean useGwt;
     @Override
-    public String getUseGwt() {
-        return "";
+    public Boolean getUseGwt() {
+        return useGwt;
     }
 
     @Override
