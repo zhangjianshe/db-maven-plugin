@@ -16,6 +16,7 @@ import org.nutz.dao.entity.annotation.PK;
 import org.nutz.json.Json;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
+import org.springframework.stereotype.Component;
 import schemacrawler.inclusionrule.RegularExpressionInclusionRule;
 import schemacrawler.schema.*;
 import schemacrawler.schemacrawler.*;
@@ -27,6 +28,8 @@ import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -124,10 +127,85 @@ public class NutzImpl {
                     }
                 }
                 exportEntity(table, configure);
+                exportDao(table, configure);
             }
         }
     }
 
+    /**
+     * 输出DAO
+     *
+     * @param table
+     * @param configure
+     */
+    private void exportDao(Table table, IConfigure configure) {
+        if (Strings.isBlank(configure.daoPackage())) {
+            //只有配置DAO Package 才会输出DAO
+            return;
+        }
+        String fileName = getClassTypeName(table.getName()) + "Dao";
+
+        ClassName entityName = ClassName.get(configure.entityPackage(), getClassTypeName(table.getName()) + "Entity");
+
+        ClassName parentClassName = ClassName.get("cn.mapway.dao", "BaseDao");
+        ParameterizedTypeName t = ParameterizedTypeName.get(parentClassName,entityName);
+
+        TypeSpec.Builder typeBuilder = TypeSpec.classBuilder(fileName)
+                .addModifiers(Modifier.PUBLIC)
+                .superclass(t);
+
+
+        typeBuilder.addAnnotation(AnnotationSpec.builder(Component.class).build());
+
+
+        if (!configure.overrideDao()) {//不覆盖
+            Boolean exist = isFileExist(configure.daoPath(), configure.daoPackage() , fileName + ".java");
+            if (exist) {
+                log.warn("存在Dao文件" + fileName);
+                return;
+            }
+        }
+
+        try {
+            JavaFile javaFile = JavaFile.builder(configure.daoPackage() , typeBuilder.build())
+                    .skipJavaLangImports(true)
+                    .build();
+            javaFile.writeTo(new File(configure.daoPath()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 文件存在
+     *
+     * @param daoPath    刀路
+     * @param daoPackage dao包
+     * @param fileName   文件名称
+     * @return {@link Boolean}
+     */
+    private Boolean isFileExist(String daoPath, String daoPackage, String fileName) {
+        Path outputDirectory = new File(daoPath).toPath();
+        if (!daoPackage.isEmpty()) {
+            String temp = daoPackage.replace(".", File.separator);
+            outputDirectory = outputDirectory.resolve(temp);
+            try {
+                Files.createDirectories(outputDirectory);
+            } catch (IOException e) {
+            }
+        }
+
+        Path outputPath = outputDirectory.resolve(fileName);
+        return outputPath.toFile().exists();
+
+    }
+
+    /**
+     * 出口单位
+     *
+     * @param table     表格
+     * @param configure 配置
+     */
     private void exportEntity(Table table, IConfigure configure) {
         TypeSpec.Builder typeBuilder = TypeSpec.classBuilder(getClassTypeName(table.getName()) + "Entity")
                 .addModifiers(Modifier.PUBLIC)

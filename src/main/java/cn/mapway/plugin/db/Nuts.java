@@ -104,7 +104,16 @@ public class Nuts extends AbstractMojo {
      */
     @Parameter(defaultValue = "false", property = "useGwt", required = false)
     private Boolean useGwt;
-
+    /**
+     * The package name.
+     */
+    @Parameter(defaultValue = "", property = "daoPackage", required = true)
+    private String daoPackage;
+    /**
+     * The path.
+     */
+    @Parameter(defaultValue = "${project.basedir}/src/main/java", property = "daoPath", required = true)
+    private String daoPath;
     /**
      * 解析行
      *
@@ -161,12 +170,12 @@ public class Nuts extends AbstractMojo {
 
             @Override
             public String daoPackage() {
-                return "daoPackage";
+                return daoPackage;
             }
 
             @Override
             public String daoPath() {
-                return "daoPath";
+                return daoPath;
             }
 
             @Override
